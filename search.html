@@ -43,10 +43,10 @@
     <a class="logo" href="index.html" aria-label="LincsDirectory home"><svg viewBox="0 0 64 64" aria-hidden="true" focusable="false"><rect width="64" height="64" rx="15" fill="#0F2A24"/><path d="M32 5C19.3 5 9 15.1 9 27.5 9 44 32 61 32 61S55 44 55 27.5C55 15.1 44.7 5 32 5Z" fill="#D4F25A"/><path d="M21.5 13.5h8v19.5h14v8h-22z" fill="#0F2A24"/><circle cx="40.5" cy="21.5" r="5.5" fill="#FF6A3D"/></svg><span class="wm"><i>Lincs</i><b>Directory</b></span></a>
     <button class="menu-btn" type="button" aria-expanded="false" aria-controls="mainnav">Menu</button>
     <nav class="main" id="mainnav" aria-label="Main">
-      <a href="search.html" aria-current="page">Search</a>
-      <a href="browse.html">Browse</a>
-      <a href="advertise.html">Advertise</a>
-      <a href="about.html">About</a>
+      <a href="where.html">Where to?</a>
+      <a href="jobs.html#broken">What's broken?</a>
+      <a href="jobs.html#need">What do you need?</a>
+      <a href="pros.html">For businesses</a>
       <a href="suggest.html" class="btn small ghost">Suggest a business</a>
       <a href="claim.html" class="btn small">Claim your listing</a>
     </nav>
@@ -80,6 +80,7 @@
   <div class="wrap stage">
     <div class="listcol">
       <h2 class="visually-hidden">Results</h2>
+      <div class="jobhits" id="jobHits" hidden></div>
       <p class="status" id="status" aria-live="polite">Loading listings…</p>
       <div class="list" id="list"><div class="skel" style="height:7rem"></div><div class="skel" style="height:7rem"></div><div class="skel" style="height:7rem"></div></div>
       <div class="more" id="more"></div>
@@ -118,24 +119,28 @@
     <div class="cols">
       <div>
         <a class="logo" href="index.html" aria-label="LincsDirectory home"><svg viewBox="0 0 64 64" aria-hidden="true" focusable="false"><rect width="64" height="64" rx="15" fill="#D4F25A"/><path d="M32 5C19.3 5 9 15.1 9 27.5 9 44 32 61 32 61S55 44 55 27.5C55 15.1 44.7 5 32 5Z" fill="#0F2A24"/><path d="M21.5 13.5h8v19.5h14v8h-22z" fill="#D4F25A"/><circle cx="40.5" cy="21.5" r="5.5" fill="#FF6A3D"/></svg><span class="wm"><i>Lincs</i><b>Directory</b></span></a>
-        <p style="margin-top:.9rem;max-width:28rem">Find what's local in Lincolnshire. Free listings for every local business, built from public records and kept straight by the businesses themselves.</p>
+        <p style="margin-top:.9rem;max-width:28rem">Where to, what's broken, what do you need: LincsDirectory points you to local Lincolnshire businesses. Free listings built from public records and kept straight by the businesses themselves.</p>
         <p>Phone <a href="tel:+441522424963">01522 424963</a> or <a href="claim.html">send us a message</a>.</p>
       </div>
       <div>
         <h2 class="fh">Find</h2>
         <ul>
-          <li><a href="search.html">Search all listings</a></li>
-          <li><a href="search.html#near">What's near me</a></li>
+          <li><a href="where.html">Where to? Things to do, eat &amp; drink, shops</a></li>
+          <li><a href="jobs.html#broken">What's broken? Repairs &amp; fixes</a></li>
+          <li><a href="jobs.html#need">What do you need? Get things done</a></li>
+          <li><a href="help.html">Get local help with a job</a></li>
+          <li><a href="search.html">Search all listings</a> · <a href="search.html#near">Near me</a></li>
           <li><a href="browse.html">Browse by town or category</a></li>
-          <li><a href="suggest.html">Suggest a business</a></li>
         </ul>
       </div>
       <div>
         <h2 class="fh">Businesses</h2>
         <ul>
+          <li><a href="pros.html">Tradespeople &amp; services: get found for the jobs you do</a></li>
           <li><a href="claim.html">Claim or update your listing</a></li>
           <li><a href="index.html#premium">Premium listing, £4.99</a></li>
           <li><a href="claim.html#remove">Remove a listing</a></li>
+          <li><a href="suggest.html">Suggest a business</a></li>
           <li><a href="advertise.html">Advertise with us</a></li>
         </ul>
       </div>
@@ -150,24 +155,26 @@
       </div>
     </div>
     <div class="browse">
-      <h2 class="fh">Browse by town</h2><div class="links"><a href="lincoln-business-directory.html">Lincoln</a><a href="sleaford-business-directory.html">Sleaford</a><a href="boston-business-directory.html">Boston</a><a href="spalding-business-directory.html">Spalding</a><a href="skegness-business-directory.html">Skegness</a><a href="grantham-business-directory.html">Grantham</a><a href="louth-business-directory.html">Louth</a><a href="stamford-business-directory.html">Stamford</a><a href="gainsborough-business-directory.html">Gainsborough</a><a href="bourne-business-directory.html">Bourne</a><a href="horncastle-business-directory.html">Horncastle</a><a href="market-rasen-business-directory.html">Market Rasen</a><a href="woodhall-spa-business-directory.html">Woodhall Spa</a><a href="holbeach-business-directory.html">Holbeach</a><a href="mablethorpe-business-directory.html">Mablethorpe</a><a href="market-deeping-business-directory.html">Market Deeping</a><a href="spilsby-business-directory.html">Spilsby</a><a href="alford-business-directory.html">Alford</a><a href="long-sutton-business-directory.html">Long Sutton</a><a href="crowland-business-directory.html">Crowland</a><a href="wainfleet-business-directory.html">Wainfleet</a><a href="caistor-business-directory.html">Caistor</a></div>
-      <h2 class="fh">Browse by category</h2><div class="links"><a href="restaurants-lincolnshire.html">Restaurants</a><a href="cafes-coffee-shops-lincolnshire.html">Cafés &amp; coffee shops</a><a href="takeaways-lincolnshire.html">Takeaways</a><a href="pubs-bars-lincolnshire.html">Pubs &amp; bars</a><a href="hotels-bed-and-breakfast-lincolnshire.html">Hotels &amp; B&amp;Bs</a><a href="things-to-do-lincolnshire.html">Things to do</a><a href="supermarkets-convenience-stores-lincolnshire.html">Supermarkets &amp; convenience stores</a><a href="food-drink-shops-lincolnshire.html">Food &amp; drink shops</a><a href="shops-lincolnshire.html">Shops</a><a href="home-garden-diy-lincolnshire.html">Home, garden &amp; DIY</a><a href="hair-beauty-lincolnshire.html">Hair &amp; beauty</a><a href="health-pharmacy-lincolnshire.html">Health &amp; pharmacy</a><a href="garages-motoring-lincolnshire.html">Garages &amp; motoring</a><a href="trades-lincolnshire.html">Trades &amp; crafts</a><a href="professional-financial-services-lincolnshire.html">Professional &amp; financial services</a><a href="estate-agents-lincolnshire.html">Estate agents</a><a href="pets-vets-lincolnshire.html">Pets &amp; vets</a><a href="sport-leisure-lincolnshire.html">Sport &amp; leisure</a><a href="halls-venues-lincolnshire.html">Halls, clubs &amp; venues</a><a href="caterers-lincolnshire.html">Caterers</a><a href="services-lincolnshire.html">Services</a><a href="offices-workspace-lincolnshire.html">Offices &amp; workspace</a><a href="browse.html">All pages</a></div>
+      <h2 class="fh">Browse by job</h2><div class="links"><a href="jobs.html#plumbing">Home repairs &amp; plumbing</a><a href="jobs.html#heating">Heating &amp; gas</a><a href="jobs.html#electrical">Electrical</a><a href="jobs.html#building">Building, roofing &amp; decorating</a><a href="jobs.html#garden">Garden &amp; outdoor</a><a href="jobs.html#car">Car care</a><a href="jobs.html#cleaning">Cleaning</a><a href="jobs.html#appliances">Appliances &amp; gadgets</a><a href="jobs.html#locks">Locks &amp; security</a><a href="jobs.html#moving">Moving, storage &amp; waste</a><a href="jobs.html#beauty">Hair &amp; beauty</a><a href="jobs.html#pets">Pets</a><a href="jobs.html#events">Events &amp; celebrations</a><a href="jobs.html#learning">Tutoring, lessons &amp; other services</a><a href="jobs.html">All jobs</a></div>
+      <h2 class="fh">Browse by town</h2><div class="links"><a href="lincoln-business-directory.html">Lincoln</a><a href="boston-business-directory.html">Boston</a><a href="spalding-business-directory.html">Spalding</a><a href="grantham-business-directory.html">Grantham</a><a href="skegness-business-directory.html">Skegness</a><a href="louth-business-directory.html">Louth</a><a href="stamford-business-directory.html">Stamford</a><a href="sleaford-business-directory.html">Sleaford</a><a href="bourne-business-directory.html">Bourne</a><a href="gainsborough-business-directory.html">Gainsborough</a><a href="mablethorpe-business-directory.html">Mablethorpe</a><a href="holbeach-business-directory.html">Holbeach</a><a href="horncastle-business-directory.html">Horncastle</a><a href="market-deeping-business-directory.html">Market Deeping</a><a href="woodhall-spa-business-directory.html">Woodhall Spa</a><a href="alford-business-directory.html">Alford</a><a href="spilsby-business-directory.html">Spilsby</a><a href="long-sutton-business-directory.html">Long Sutton</a><a href="market-rasen-business-directory.html">Market Rasen</a><a href="wainfleet-business-directory.html">Wainfleet</a><a href="crowland-business-directory.html">Crowland</a><a href="caistor-business-directory.html">Caistor</a></div>
+      <h2 class="fh">Browse by category</h2><div class="links"><a href="restaurants-lincolnshire.html">Restaurants</a><a href="cafes-coffee-shops-lincolnshire.html">Cafés &amp; coffee shops</a><a href="takeaways-lincolnshire.html">Takeaways</a><a href="pubs-bars-lincolnshire.html">Pubs &amp; bars</a><a href="hotels-bed-and-breakfast-lincolnshire.html">Hotels &amp; B&amp;Bs</a><a href="things-to-do-lincolnshire.html">Things to do</a><a href="supermarkets-convenience-stores-lincolnshire.html">Supermarkets &amp; convenience stores</a><a href="food-drink-shops-lincolnshire.html">Food &amp; drink shops</a><a href="shops-lincolnshire.html">Shops</a><a href="home-garden-diy-lincolnshire.html">Home, garden &amp; DIY</a><a href="hair-beauty-lincolnshire.html">Hair &amp; beauty</a><a href="health-pharmacy-lincolnshire.html">Health &amp; pharmacy</a><a href="garages-motoring-lincolnshire.html">Garages &amp; motoring</a><a href="trades-lincolnshire.html">Trades &amp; crafts</a><a href="professional-financial-services-lincolnshire.html">Professional &amp; financial services</a><a href="estate-agents-lincolnshire.html">Estate agents</a><a href="pets-vets-lincolnshire.html">Pets &amp; vets</a><a href="sport-leisure-lincolnshire.html">Sport &amp; leisure</a><a href="halls-venues-lincolnshire.html">Halls, clubs &amp; venues</a><a href="caterers-lincolnshire.html">Caterers</a><a href="services-lincolnshire.html">Services</a><a href="offices-workspace-lincolnshire.html">Offices &amp; workspace</a><a href="plumbers-heating-lincolnshire.html">Plumbers &amp; heating</a><a href="electricians-lincolnshire.html">Electricians</a><a href="builders-handyman-trades-lincolnshire.html">Builders &amp; handyman trades</a><a href="gardeners-landscapers-lincolnshire.html">Gardeners &amp; landscapers</a><a href="mot-servicing-tyres-lincolnshire.html">MOT, servicing &amp; tyres</a><a href="car-washes-valeting-lincolnshire.html">Car washes &amp; valeting</a><a href="cleaners-lincolnshire.html">Cleaners</a><a href="removals-storage-lincolnshire.html">Removals &amp; storage</a><a href="appliance-gadget-repair-lincolnshire.html">Appliance &amp; gadget repair</a><a href="locksmiths-lincolnshire.html">Locksmiths</a><a href="pet-services-lincolnshire.html">Pet services</a><a href="tutors-lessons-lincolnshire.html">Tutors &amp; lessons</a><a href="photographers-events-lincolnshire.html">Photographers &amp; events</a><a href="browse.html">All pages</a></div>
     </div>
     <div class="legal">
       <p>&copy; <span id="yr">2026</span> TAG Sleaford Ltd, trading as LincsDirectory. Registered in England and Wales, company number 12870323. Registered office: Building 15 Gateway 1000, Whittle Way, Arlington Business Park, Stevenage, Hertfordshire, SG1 2FP. Trading from Kesteven Business Centre, Kesteven Street, Sleaford NG34 7DT.</p>
-      <p>Listings are built from public data: Food Standards Agency Food Hygiene Rating Scheme data (Crown copyright, <a href="https://www.nationalarchives.gov.uk/doc/open-government-licence/version/3/" rel="noopener">Open Government Licence v3.0</a>) and <a href="https://www.openstreetmap.org/copyright" rel="noopener">OpenStreetMap</a> contributors (ODbL). Unclaimed listings may be out of date; businesses can <a href="claim.html">correct or remove</a> theirs at any time. Premium listings are paid placements and appear first; they are always marked. Ratings are moderated: see our <a href="terms.html#ratings">ratings policy</a>.</p>
+      <p>Listings are built from public data: Food Standards Agency Food Hygiene Rating Scheme data (Crown copyright, <a href="https://www.nationalarchives.gov.uk/doc/open-government-licence/version/3/" rel="noopener">Open Government Licence v3.0</a>) and <a href="https://www.openstreetmap.org/copyright" rel="noopener">OpenStreetMap</a> contributors (ODbL), including a phone number where the OpenStreetMap record carries one; a location marked "near" is taken from the map rather than a recorded address. Unclaimed listings may be out of date; businesses can <a href="claim.html">correct or remove</a> theirs at any time. Premium listings are paid placements and appear first; they are always marked. Ratings are moderated: see our <a href="terms.html#ratings">ratings policy</a>. LincsDirectory doesn't vet or endorse businesses: always check credentials and get a written quote.</p>
     </div>
   </div>
 </footer>
 <nav class="mobilebar" aria-label="Quick links">
+  <a href="where.html"><svg viewBox="0 0 24 24" width="24" height="24" aria-hidden="true" focusable="false"><path d="M12 21s-6-5.3-6-11a6 6 0 0 1 12 0c0 5.7-6 11-6 11z" fill="none" stroke="currentColor" stroke-width="2.2"/><path d="M9.5 10l2 2 3.5-4" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg><span>Where to?</span></a>
+  <a href="jobs.html#broken" class="hot"><svg viewBox="0 0 24 24" width="24" height="24" aria-hidden="true" focusable="false"><path d="M14.7 6.3a4 4 0 0 0 4.8 5.2L21 13l-8 8-1.5-1.5 8-8A4 4 0 0 0 14.7 6.3z" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linejoin="round"/><path d="M3 21l6-6M4 4l3 3M4 7l3-3" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/></svg><span>Broken?</span></a>
+  <a href="jobs.html#need"><svg viewBox="0 0 24 24" width="24" height="24" aria-hidden="true" focusable="false"><path d="M9 11l3 3 8-8" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/><path d="M20 12v6a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h9" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/></svg><span>Need?</span></a>
   <a href="search.html" aria-current="page"><svg viewBox="0 0 24 24" width="24" height="24" aria-hidden="true" focusable="false"><circle cx="11" cy="11" r="7" fill="none" stroke="currentColor" stroke-width="2.4"/><path d="M16.5 16.5 21 21" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/></svg><span>Search</span></a>
-  <a href="search.html#near"><svg viewBox="0 0 24 24" width="24" height="24" aria-hidden="true" focusable="false"><path d="M12 21s-6-5.3-6-11a6 6 0 0 1 12 0c0 5.7-6 11-6 11z" fill="none" stroke="currentColor" stroke-width="2.2"/><circle cx="12" cy="10" r="2.2" fill="currentColor"/></svg><span>Near me</span></a>
-  <a href="suggest.html" class="hot"><svg viewBox="0 0 24 24" width="24" height="24" aria-hidden="true" focusable="false"><circle cx="12" cy="12" r="9" fill="none" stroke="currentColor" stroke-width="2.2"/><path d="M12 8v8M8 12h8" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/></svg><span>Suggest</span></a>
-  <a href="claim.html"><svg viewBox="0 0 24 24" width="24" height="24" aria-hidden="true" focusable="false"><path d="M6 21V4m0 0h11l-2 4 2 4H6" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linejoin="round" stroke-linecap="round"/></svg><span>Claim</span></a>
 </nav>
 <script src="assets/app.js" defer></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.js" crossorigin=""></script>
 <script src="assets/directory.js"></script>
+<script src="assets/intent.js"></script>
 <script>
 (function () {
   var $ = function (id) { return document.getElementById(id); };
@@ -225,19 +232,19 @@
     c.appendChild(top);
     c.appendChild(LD.el("p", { class: "meta", text: (IDX.cats[l.c] || "") + " · " + townName(l.t) + (l._d != null ? " · " + l._d.toFixed(1) + " miles" : "") }));
     c.appendChild(LD.stars(l, RATINGS));
-    c.appendChild(LD.el("p", { text: l.a + (l.p ? ", " + l.p : "") }));
+    c.appendChild(LD.el("p", { text: LD.addr(l, IDX.towns) }));
     if (prem) {
       if (l.desc) c.appendChild(LD.el("p", { text: l.desc }));
       if (l.hrs) c.appendChild(LD.el("p", { class: "small muted", text: "Open: " + l.hrs }));
-      if (l.ph) { var pp = LD.el("p", { text: "Phone: " }); pp.appendChild(LD.el("a", { href: "tel:+44" + l.ph.replace(/\s+/g, "").replace(/^0/, ""), text: l.ph })); c.appendChild(pp); }
     }
+    if (l.ph) { var pp = LD.el("p", { text: "Phone: " }); pp.appendChild(LD.el("a", { href: "tel:+44" + l.ph.replace(/\s+/g, "").replace(/^0/, ""), text: l.ph })); c.appendChild(pp); }
     var acts = LD.el("div", { class: "actions" });
     if (prem) acts.appendChild(LD.el("a", { class: "btn small", href: LD.profileUrl(l), text: "View profile" }));
     if (prem && l.w) acts.appendChild(LD.el("a", { class: "btn small ghost", href: l.w, target: "_blank", rel: "sponsored noopener", text: "Visit website" }));
     acts.appendChild(LD.el("a", { class: "btn small ghost", href: "https://www.google.com/maps/dir/?api=1&destination=" + l.la + "," + l.lo, target: "_blank", rel: "noopener", text: "Directions" }));
     if (!prem) acts.appendChild(LD.el("a", { class: "btn small ghost", href: LD.claimUrl(l), text: "Claim this listing" }));
     c.appendChild(acts);
-    c.appendChild(LD.el("p", { class: "src", text: prem ? "Premium listing: details supplied by the business." : LD.sourceNote(l) + " Not yet claimed by the owner, so details may be out of date." }));
+    c.appendChild(LD.el("p", { class: "src", text: prem ? "Premium listing: details supplied by the business." : LD.sourceNote(l) + (l.ax ? " Location taken from the map, not a recorded address." : "") + " Not yet claimed by the owner, so details may be out of date." }));
     c.addEventListener("click", function (e) { if (e.target.tagName !== "A") setActive(l.id, true); });
     c.addEventListener("keydown", function (e) { if (e.key === "Enter" && e.target === c) setActive(l.id, true); });
     return c;
@@ -250,7 +257,7 @@
     var where = state.town ? "in " + townName(state.town) : "across Lincolnshire";
     status.textContent = "";
     status.appendChild(LD.el("strong", { text: LD.fmt(n) + (n === 1 ? " result" : " results") }));
-    status.appendChild(document.createTextNode(" for " + what + " " + where + (state.user ? ", nearest first" : "") + ". Premium listings appear first."));
+    status.appendChild(document.createTextNode(" for " + what + " " + where + (state.user ? ", nearest first" : "") + (state.jobCats ? " (businesses that do “" + state.jobCats + "”)" : "") + ". Premium listings appear first."));
     document.title = (state.q ? state.q + " " + where : (state.cat ? IDX.cats[state.cat] + " " + where : "Search Lincolnshire businesses")) + " | LincsDirectory";
     $("pageTitle").textContent = state.q ? "Results for " + state.q + " " + where : (state.cat ? IDX.cats[state.cat] + " " + where : (state.town ? "Businesses in " + townName(state.town) : "Search Lincolnshire businesses"));
     if (!n) {
@@ -282,7 +289,7 @@
     subset.forEach(function (l) {
       var key = l.la + "," + l.lo; var k = (seen[key] = (seen[key] || 0) + 1);
       var m = L.marker([l.la + (k - 1) * 0.00012, l.lo], { icon: pin(l, state.active === l.id), title: l.n, keyboard: true });
-      m.bindPopup("<strong>" + l.n.replace(/</g, "&lt;") + "</strong><br>" + l.a.replace(/</g, "&lt;") + (l.p ? ", " + l.p : ""));
+      m.bindPopup("<strong>" + l.n.replace(/</g, "&lt;") + "</strong><br>" + LD.addr(l, IDX.towns).replace(/</g, "&lt;"));
       m.on("click", function () { setActive(l.id, false); });
       m.addTo(layer); markers[l.id] = m;
     });
@@ -303,6 +310,25 @@
     if (!pan) { var c = document.querySelector('.card[data-id="' + id + '"]'); if (c && c.scrollIntoView) c.scrollIntoView({ block: "nearest", behavior: "smooth" }); }
   }
 
+  /* intent: show matching job pages above the results ("wash my car" -> Wash my car), and widen the search to the job's categories
+     when the plain text search finds little. */
+  var JOBS = null;
+  function jobHits() {
+    var box = $("jobHits"); box.hidden = true; box.textContent = "";
+    if (!state.q || !JOBS || !window.LDI) return [];
+    var hits = LDI.match(state.q, JOBS, 3);
+    if (!hits.length) return [];
+    var h = LD.el("div", { class: "jh-head" }, [LD.el("span", { class: "eyebrow", text: hits[0].score >= 0.8 ? "Looks like you need" : "Related jobs" })]);
+    box.appendChild(h);
+    hits.forEach(function (x) {
+      var j = x.job, t = state.town;
+      var a = LD.el("a", { class: "jh", href: j.s + ".html" + (t ? "#town-" + t : "") }, [LD.el("strong", { text: j.t }), LD.el("span", { text: "What it involves, what to ask, local pros" + (t ? " in " + townName(t) : "") + " ›" })]);
+      box.appendChild(a);
+    });
+    box.appendChild(LD.el("a", { class: "btn small coral", href: "help.html?job=" + encodeURIComponent(hits[0].job.s) + (state.town ? "&town=" + state.town : "") + "&need=" + encodeURIComponent(state.q), text: "Get local help with this" }));
+    box.hidden = false;
+    return hits;
+  }
   function run(resetShown) {
     if (resetShown) state.shown = PAGE;
     var pq = LD.parseQuery(state.q, IDX.towns);
@@ -312,6 +338,12 @@
       if (pq.town !== state.town) { state.town = pq.town; $("townSel").value = pq.town; load(); return; }
     }
     RESULTS = LD.search(ROWS, { tokens: pq.tokens, cat: state.cat, catNames: IDX.cats, user: state.user });
+    var hits = jobHits();
+    if (hits.length && hits[0].score >= 0.7 && RESULTS.length < 3 && !state.cat) {
+      // the words didn't match many names, but we know the job: show the businesses in its categories instead
+      RESULTS = LD.search(ROWS, { tokens: [], cats: hits[0].job.c, catNames: IDX.cats, user: state.user });
+      state.jobCats = hits[0].job.t;
+    } else state.jobCats = "";
     renderFilters(); renderList(); renderMap(true); setUrl();
     if (state.id) { var hit = RESULTS.filter(function (r) { return r.id === state.id; })[0]; if (hit) { var idx = RESULTS.indexOf(hit); if (idx >= state.shown) { state.shown = idx + 1; renderList(); renderMap(false); } setTimeout(function () { setActive(hit.id, true); }, 200); } state.id = ""; }
   }
@@ -335,8 +367,8 @@
   }
   $("nearBtn").addEventListener("click", nearMe);
 
-  Promise.all([LD.index(), LD.ratings()]).then(function (res) {
-    var idx = res[0]; RATINGS = res[1] || {};
+  Promise.all([LD.index(), LD.ratings(), (window.LDI ? LDI.load().catch(function () { return null; }) : Promise.resolve(null))]).then(function (res) {
+    var idx = res[0]; RATINGS = res[1] || {}; JOBS = res[2];
     IDX = idx; LIVE = LD.liveCounts(idx);
     var pq = LD.parseQuery(state.q, IDX.towns); if (pq.town) state.town = pq.town;
     load();
