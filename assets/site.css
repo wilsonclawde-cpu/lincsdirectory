@@ -90,6 +90,10 @@ section.band.alt{background:var(--paper)}
 section.band.dark{background:var(--ink);color:#E7EEE5}
 section.band.dark h2,section.band.dark h3{color:#fff}
 section.band.dark a{color:var(--lime)}
+section.band.dark .btn{color:var(--ink)}
+section.band.dark .btn:hover{color:var(--ink)}
+section.band.dark .btn.ghost{color:#fff;border-color:#fff}
+section.band.dark .btn.ghost:hover{background:#fff;color:var(--ink)}
 .grid{display:grid;gap:1.2rem}
 .grid.c3{grid-template-columns:repeat(3,1fr)}
 .grid.c4{grid-template-columns:repeat(4,1fr)}
@@ -171,8 +175,7 @@ form.enquiry .two{display:grid;grid-template-columns:1fr 1fr;gap:1rem}
 form.enquiry .hp{position:absolute;left:-9999px;top:auto;width:1px;height:1px;overflow:hidden}
 form.enquiry .check{display:grid;grid-template-columns:auto 1fr;gap:.6rem;align-items:start;font-weight:500}
 form.enquiry .check input{width:1.2rem;height:1.2rem;margin-top:.2rem}
-.plans{display:grid;grid-template-columns:repeat(3,1fr);gap:.7rem}
-@media (max-width:700px){.plans{grid-template-columns:1fr}}
+.plans{display:grid;grid-template-columns:1fr;gap:.7rem}
 .plans label{border:2px solid var(--line);border-radius:12px;padding:.9rem 1rem;cursor:pointer;display:grid;grid-template-columns:auto 1fr;gap:.6rem;align-items:start;font-weight:700}
 .plans label:has(input:checked){border-color:var(--ink);background:var(--soft)}
 .plans label.rem:has(input:checked){border-color:var(--coral);background:#fff4ef}
