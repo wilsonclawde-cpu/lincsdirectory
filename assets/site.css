@@ -203,7 +203,9 @@ form.enquiry .check input{width:1.2rem;height:1.2rem;margin-top:.2rem}
 .chiprow{display:flex;flex-wrap:wrap;gap:.45rem;align-items:center;margin-bottom:.6rem}
 .chiprow .lab{font-size:.8rem;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin-right:.3rem}
 .chiprow select{font:700 .92rem "Manrope",sans-serif;padding:.45rem .8rem;border-radius:99px;border:1.5px solid var(--ink);background:#fff;color:var(--ink)}
-.stage{display:grid;grid-template-columns:minmax(300px,480px) 1fr;gap:1.4rem;padding:1rem 0 3rem;align-items:start}
+.stage{display:grid;grid-template-columns:minmax(300px,480px) 1fr;grid-template-areas:"list map" "list ad";gap:1.4rem;padding:1rem 0 3rem;align-items:start}
+.listcol{grid-area:list;min-width:0}
+.mapad{grid-area:ad}
 .status{font-size:.97rem;color:var(--muted);margin:0 0 .8rem;min-height:1.5em}
 .status strong{color:var(--ink)}
 .list{display:grid;gap:.8rem}
@@ -224,15 +226,15 @@ form.enquiry .check input{width:1.2rem;height:1.2rem;margin-top:.2rem}
 .more{margin-top:1rem;text-align:center}
 .empty-state{background:var(--paper);border:2px dashed var(--line);border-radius:var(--r);padding:1.3rem}
 .empty-state h3{margin-bottom:.4rem}
-#map{height:640px;border:2px solid var(--ink);border-radius:var(--r);overflow:hidden;position:sticky;top:1rem;background:#dfe7df;z-index:1}
+#map{grid-area:map;height:640px;border:2px solid var(--ink);border-radius:var(--r);overflow:hidden;position:sticky;top:1rem;background:#dfe7df;z-index:1}
 .pin{width:24px;height:24px;border-radius:50% 50% 50% 0;transform:rotate(-45deg);background:var(--lime);border:3px solid var(--ink);box-shadow:0 2px 0 rgba(0,0,0,.25)}
 .pin.on{background:var(--ink);border-color:var(--lime)}
 .pin.prem{background:var(--coral);border-color:#fff}
 .me{width:16px;height:16px;border-radius:50%;background:#2563eb;border:3px solid #fff;box-shadow:0 0 0 2px #2563eb}
 .sidead{margin-top:1rem}
 @media (max-width:900px){
-  .stage{grid-template-columns:1fr}
-  #map{height:320px;position:static;order:-1}
+  .stage{grid-template-columns:1fr;grid-template-areas:"map" "list" "ad"}
+  #map{height:300px;position:static}
 }
 
 /* footer */

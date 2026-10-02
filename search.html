@@ -72,7 +72,7 @@
 </section>
 <section>
   <div class="wrap stage">
-    <div>
+    <div class="listcol">
       <p class="status" id="status" aria-live="polite">Loading listings…</p>
       <div class="list" id="list"></div>
       <div class="more" id="more"></div>
@@ -86,9 +86,8 @@
   </div>
 </div></div>
     </div>
-    <div>
-      <div id="map" role="region" aria-label="Map of results"></div>
-      <div class="sidead"><div class="ad kbc" role="complementary" aria-label="Advertisement: Kesteven Business Centre">
+    <div id="map" role="region" aria-label="Map of results"></div>
+    <div class="mapad"><div class="ad kbc" role="complementary" aria-label="Advertisement: Kesteven Business Centre">
   <span class="badge ad">Advertisement</span>
   <div class="mark" style="background:#1D3B53"><svg viewBox="0 0 48 48" width="34" height="34" aria-hidden="true"><path d="M8 40V18l16-10 16 10v22H8z" fill="none" stroke="#F2B705" stroke-width="3" stroke-linejoin="round"/><path d="M20 40V28h8v12" fill="none" stroke="#F2B705" stroke-width="3"/><path d="M14 24h4m12 0h4M14 31h4m12 0h4" stroke="#F2B705" stroke-width="2.5" stroke-linecap="round"/></svg></div>
   <div>
@@ -97,7 +96,6 @@
     <a class="btn small dark" href="https://centre.tagsleaford.com" rel="noopener sponsored">See the offices</a>
   </div>
 </div></div>
-    </div>
   </div>
 </section>
 <section class="band dark">
@@ -280,7 +278,11 @@
   function run(resetShown) {
     if (resetShown) state.shown = PAGE;
     var pq = LD.parseQuery(state.q, IDX.towns);
-    if (pq.town && pq.town !== state.town) { state.town = pq.town; $("townSel").value = pq.town; load(); return; }
+    if (pq.town) {   // "chinese in sleaford": move the town into the Town filter and keep the query clean
+      var re = new RegExp("(in|near|around)? *" + IDX.towns[pq.town].name, "i");
+      state.q = state.q.replace(re, " ").replace(/\s+/g, " ").trim(); $("q").value = state.q;
+      if (pq.town !== state.town) { state.town = pq.town; $("townSel").value = pq.town; load(); return; }
+    }
     RESULTS = LD.search(ROWS, { tokens: pq.tokens, cat: state.cat, catNames: IDX.cats, user: state.user });
     renderFilters(); renderList(); renderMap(true); setUrl();
     if (state.id) { var hit = RESULTS.filter(function (r) { return r.id === state.id; })[0]; if (hit) { var idx = RESULTS.indexOf(hit); if (idx >= state.shown) { state.shown = idx + 1; renderList(); renderMap(false); } setTimeout(function () { setActive(hit.id, true); }, 200); } state.id = ""; }

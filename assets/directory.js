@@ -46,7 +46,7 @@ window.LD = (function () {
 
   // Plain-English words -> categories and name keywords.
   var SYN = {
-    chinese: { c: ["rest", "take"], k: ["chinese", "china", "wok", "peking", "canton", "hong kong", "oriental", "dragon", "jade", "golden", "panda"] },
+    chinese: { c: ["rest", "take"], k: ["chinese", "china", "wok", "peking", "canton", "hong kong", "oriental", "dragon", "jade", "golden", "panda", "lucky", "mandarin", "szechuan", "sichuan", "bamboo", "lotus", "phoenix", "pearl", "ming", "hong", "dynasty", "imperial", "palace", "noodle", "dim sum", "happy", "fortune", "lantern", "chopstick"] },
     indian: { c: ["rest", "take"], k: ["indian", "tandoori", "balti", "curry", "spice", "masala", "raj", "taj", "bengal", "punjab", "dhaba"] },
     curry: { c: ["rest", "take"], k: ["indian", "tandoori", "balti", "curry", "spice", "masala"] },
     thai: { c: ["rest", "take"], k: ["thai", "siam", "bangkok"] },
