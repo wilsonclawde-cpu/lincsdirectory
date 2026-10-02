@@ -147,6 +147,12 @@ window.LD = (function () {
     }
     return sortResults(out);
   }
+  // Nearest n live listings to a point (client-side only; nothing is sent anywhere).
+  function nearest(rows, user, n) {
+    var out = rows.map(function (l) { l._d = miles(user, { lat: l.la, lng: l.lo }); return l; });
+    out.sort(function (a, b) { return a._d - b._d; });
+    return out.slice(0, n || 10);
+  }
   function miles(a, b) {
     var R = 3958.8, rad = Math.PI / 180;
     var dLat = (b.lat - a.lat) * rad, dLng = (b.lng - a.lng) * rad;
@@ -172,5 +178,5 @@ window.LD = (function () {
     if (l.s === "aide") return "Listed by Aide, TAG Sleaford's directory, from public records.";
     return "Details supplied by the business.";
   }
-  return { TODAY: TODAY, BASE: BASE, index: index, listings: listings, liveCounts: liveCounts, parseQuery: parseQuery, search: search, sortResults: sortResults, miles: miles, el: el, fmt: fmt, claimUrl: claimUrl, sourceNote: sourceNote, SYN: SYN };
+  return { TODAY: TODAY, BASE: BASE, index: index, listings: listings, nearest: nearest, isLive: isLive, liveCounts: liveCounts, parseQuery: parseQuery, search: search, sortResults: sortResults, miles: miles, el: el, fmt: fmt, claimUrl: claimUrl, sourceNote: sourceNote, SYN: SYN };
 })();
