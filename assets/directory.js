@@ -1,7 +1,8 @@
 /* LincsDirectory data layer + search.
    Data lives in data/index.json (counts, towns, categories, featured) and data/listings-<district>.json.
    Every listing has f = live_from (ISO date); the client only shows listings with f <= today, so the
-   drip schedule needs no daily redeploy. Fields: id,n,a,t,p,la,lo,c,s,f,tier (+ph,w,desc,img,hrs on premium). */
+   drip schedule needs no daily redeploy. Fields: id,n,a,t,p,la,lo,c,s,f,tier (+ph,w,desc,img,hrs on premium).
+   Ratings live in data/ratings.json (moderated by hand, loaded lazily); premium listings have a static profile page b-<slug>-<town>.html. */
 window.LD = (function () {
   var BASE = (document.querySelector('meta[name="ld-base"]') || {}).content || "";
   function pad(n) { return (n < 10 ? "0" : "") + n; }
@@ -16,6 +17,25 @@ window.LD = (function () {
   }
   function index() { return getJSON(BASE + "data/index.json"); }
   function isLive(l) { return !l.f || l.f <= TODAY; }
+  // Approved customer ratings: { "<listingId>": { a: 4.6, n: 12, rev: [...] } }. Moderated by hand; missing file = no ratings.
+  var ratingsP = null;
+  function ratings() { if (!ratingsP) ratingsP = getJSON(BASE + "data/ratings.json").catch(function () { return {}; }); return ratingsP; }
+  function rateUrl(l) { return BASE + "rate.html?id=" + encodeURIComponent(l.id) + "&town=" + encodeURIComponent(l.t); }
+  // Star row for a card: real average + count, or "Be the first to rate". Mirrors stars_html() in build/make_site.py.
+  function stars(l, R) {
+    var r = R && R[l.id];
+    if (r && r.n) {
+      var a = Number(r.a), n = Number(r.n), pct = Math.round(a / 5 * 100);
+      var st = el("span", { class: "st", "aria-hidden": "true", text: "★★★★★" });
+      st.appendChild(el("span", { class: "f", style: "width:" + pct + "%", text: "★★★★★" }));
+      var sr = el("span", { class: "sr" }, [el("span", { class: "visually-hidden", text: "Rated " }), document.createTextNode(a.toFixed(1)), el("span", { class: "visually-hidden", text: " out of 5" }), document.createTextNode(" · " + n + (n === 1 ? " rating" : " ratings"))]);
+      return el("div", { class: "stars" }, [st, sr, el("a", { class: "rate", href: rateUrl(l), text: "Rate" })]);
+    }
+    return el("div", { class: "stars none" }, [el("span", { class: "st", "aria-hidden": "true", text: "☆☆☆☆☆" }), el("a", { class: "rate", href: rateUrl(l), text: "Be the first to rate" })]);
+  }
+  // Premium profile page filename: b-<slug>-<town>.html. Must match profile_path() in build/make_site.py.
+  function slug(s) { return s.normalize("NFKD").replace(/[̀-ͯ]/g, "").toLowerCase().replace(/\(.*?\)/g, "").replace(/[^a-z0-9]+/g, "-").replace(/^-+|-+$/g, ""); }
+  function profileUrl(l) { var b = slug(l.n); if (!(b === l.t || b.slice(-(l.t.length + 1)) === "-" + l.t)) b += "-" + l.t; return BASE + "b-" + b + ".html"; }
 
   // Counts of live listings from index.byDate (no need to load every file on the home page).
   function liveCounts(idx) {
@@ -69,8 +89,11 @@ window.LD = (function () {
     vet: { c: ["pets"] }, vets: { c: ["pets"] }, pet: { c: ["pets"] }, dog: { c: ["pets"] }, cat: { c: ["pets"] },
     estate: { c: ["estate"] }, letting: { c: ["estate"] }, lettings: { c: ["estate"] }, house: { c: ["estate"] }, property: { c: ["estate"] }, mortgage: { c: ["prof", "estate"] },
     solicitor: { c: ["prof"] }, lawyer: { c: ["prof"] }, accountant: { c: ["prof"] }, accounts: { c: ["prof"] }, bank: { c: ["prof"] }, insurance: { c: ["prof"] }, financial: { c: ["prof"] }, recruitment: { c: ["prof"] },
-    gym: { c: ["leisure"] }, fitness: { c: ["leisure"] }, swimming: { c: ["leisure"] }, pool: { c: ["leisure"] }, golf: { c: ["leisure"] }, bowling: { c: ["leisure"] }, cinema: { c: ["leisure"] }, leisure: { c: ["leisure"] }, caravan: { c: ["leisure", "hotel"] }, holiday: { c: ["leisure", "hotel"] }, camping: { c: ["leisure"] },
-    hall: { c: ["venue"] }, venue: { c: ["venue", "leisure"] }, wedding: { c: ["venue", "hotel"] }, party: { c: ["venue", "cater"] }, hire: { c: ["venue", "office"] },
+    gym: { c: ["leisure"] }, fitness: { c: ["leisure"] }, swimming: { c: ["fun", "leisure"] }, pool: { c: ["fun", "leisure"] }, golf: { c: ["fun", "leisure"] }, bowling: { c: ["fun"] }, cinema: { c: ["fun"] }, leisure: { c: ["fun", "leisure"] }, caravan: { c: ["leisure", "hotel"] }, holiday: { c: ["leisure", "hotel"] }, camping: { c: ["leisure"] },
+    play: { c: ["fun"], k: ["play", "bongo", "jump", "trampolin", "adventure", "fun"] }, softplay: { c: ["fun"], k: ["play", "bongo", "jump", "trampolin", "adventure"] }, trampoline: { c: ["fun"], k: ["trampolin", "jump", "bongo"] }, trampolines: { c: ["fun"], k: ["trampolin", "jump", "bongo"] },
+    kids: { c: ["fun"] }, children: { c: ["fun"] }, family: { c: ["fun"] }, fun: { c: ["fun"] }, activities: { c: ["fun"] }, activity: { c: ["fun"] }, dayout: { c: ["fun"] }, attraction: { c: ["fun"] }, attractions: { c: ["fun"] },
+    theatre: { c: ["fun"] }, museum: { c: ["fun"] }, bowl: { c: ["fun"] }, tenpin: { c: ["fun"] }, escape: { c: ["fun"] }, karting: { c: ["fun"] }, paintball: { c: ["fun"] }, snooker: { c: ["fun"] }, bingo: { c: ["fun"] }, football: { c: ["fun"] }, rugby: { c: ["fun"] }, cricket: { c: ["fun"] }, tennis: { c: ["fun"] }, squash: { c: ["fun"] }, things: { c: ["fun"] },
+    hall: { c: ["venue"] }, venue: { c: ["venue", "fun"] }, wedding: { c: ["venue", "hotel"] }, party: { c: ["venue", "cater", "fun"] }, hire: { c: ["venue", "office"] },
     catering: { c: ["cater"] }, caterer: { c: ["cater"] }, buffet: { c: ["cater"] },
     supermarket: { c: ["super"] }, grocery: { c: ["super", "food"] }, groceries: { c: ["super", "food"] }, convenience: { c: ["super"] }, newsagent: { c: ["super"] }, milk: { c: ["super"] }, "co-op": { c: ["super"] }, coop: { c: ["super"] }, tesco: { c: ["super"] }, spar: { c: ["super"] },
     butcher: { c: ["food"] }, butchers: { c: ["food"] }, bakery: { c: ["food", "cafe"] }, baker: { c: ["food", "cafe"] }, bread: { c: ["food", "cafe"] }, deli: { c: ["food"] }, farmshop: { c: ["food"] }, greengrocer: { c: ["food"] }, wine: { c: ["food", "pub"] }, offlicence: { c: ["food", "super"] }, sweets: { c: ["food"] },
@@ -81,7 +104,8 @@ window.LD = (function () {
   };
   var STOP = {};
   ("i want a an the some need find me looking for near in to get somewhere somebody someone please good best cheap my can you recommend is there any with and or of at nearby around open now local lincolnshire lincs").split(" ").forEach(function (w) { STOP[w] = 1; });
-  var PHRASES = [["fish and chips", "chippy"], ["fish & chips", "chippy"], ["fish chips", "chippy"], ["bed and breakfast", "bb"], ["take away", "takeaway"], ["farm shop", "farmshop"], ["off licence", "offlicence"], ["post office", "postoffice"], ["dry cleaning", "drycleaning"], ["dry cleaner", "drycleaning"], ["car wash", "carwash"], ["estate agent", "estate"], ["estate agents", "estate"], ["meeting room", "meeting"], ["tea room", "tearoom"], ["guest house", "guesthouse"], ["coffee shop", "coffee"], ["hair dresser", "hairdresser"], ["nail bar", "nails"], ["hot food", "takeaway"]];
+  var PHRASES = [["fish and chips", "chippy"], ["fish & chips", "chippy"], ["fish chips", "chippy"], ["bed and breakfast", "bb"], ["take away", "takeaway"], ["farm shop", "farmshop"], ["off licence", "offlicence"], ["post office", "postoffice"], ["dry cleaning", "drycleaning"], ["dry cleaner", "drycleaning"], ["car wash", "carwash"], ["estate agent", "estate"], ["estate agents", "estate"], ["meeting room", "meeting"], ["tea room", "tearoom"], ["guest house", "guesthouse"], ["coffee shop", "coffee"], ["hair dresser", "hairdresser"], ["nail bar", "nails"], ["hot food", "takeaway"],
+    ["things to do", "things"], ["soft play", "softplay"], ["day out", "dayout"], ["days out", "dayout"], ["ten pin", "tenpin"], ["escape room", "escape"], ["go karting", "karting"], ["go karts", "karting"], ["crazy golf", "golf"], ["mini golf", "golf"]];
 
   function parseQuery(raw, towns) {
     var text = " " + (raw || "").toLowerCase().replace(/[^a-z0-9\s&'-]/g, " ").replace(/\s+/g, " ") + " ";
@@ -109,7 +133,7 @@ window.LD = (function () {
     for (var i = 0; i < tokens.length; i++) {
       var t = tokens[i], s = SYN[t], best = 0;
       if (s) {
-        if (s.k) {   // cuisine-style words: the name (or Featured description) must contain a keyword
+        if (s.k) {   // cuisine-style words: the name (or Premium description) must contain a keyword
           for (var k = 0; k < s.k.length; k++) if (name.indexOf(s.k[k]) > -1 || desc.indexOf(s.k[k]) > -1) { best = Math.max(best, s.c.indexOf(l.c) > -1 ? 45 : 35); break; }
         } else if (s.c.indexOf(l.c) > -1) best = Math.max(best, s.c[0] === l.c ? 30 : 18);
       }
@@ -126,7 +150,7 @@ window.LD = (function () {
   function sortResults(rows) {
     rows.sort(function (a, b) {
       var pa = a.tier === "premium" ? 1 : 0, pb = b.tier === "premium" ? 1 : 0;
-      if (pa !== pb) return pb - pa;                   // Featured first
+      if (pa !== pb) return pb - pa;                   // Premium first
       if ((b._s || 0) !== (a._s || 0)) return (b._s || 0) - (a._s || 0);
       if (a._d != null && b._d != null && a._d !== b._d) return a._d - b._d;
       return a.n.localeCompare(b.n, "en-GB");
@@ -178,5 +202,6 @@ window.LD = (function () {
     if (l.s === "aide") return "Listed by Aide, TAG Sleaford's directory, from public records.";
     return "Details supplied by the business.";
   }
-  return { TODAY: TODAY, BASE: BASE, index: index, listings: listings, nearest: nearest, isLive: isLive, liveCounts: liveCounts, parseQuery: parseQuery, search: search, sortResults: sortResults, miles: miles, el: el, fmt: fmt, claimUrl: claimUrl, sourceNote: sourceNote, SYN: SYN };
+  return { TODAY: TODAY, BASE: BASE, index: index, listings: listings, nearest: nearest, isLive: isLive, liveCounts: liveCounts, parseQuery: parseQuery, search: search, sortResults: sortResults, miles: miles, el: el, fmt: fmt, claimUrl: claimUrl, sourceNote: sourceNote, SYN: SYN,
+    ratings: ratings, stars: stars, rateUrl: rateUrl, profileUrl: profileUrl, slug: slug };
 })();
