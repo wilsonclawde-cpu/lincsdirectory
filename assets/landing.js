@@ -6,7 +6,8 @@
   Promise.all([LD.index(), LD.ratings()]).then(function (res) {
     var idx = res[0], R = res[1] || {};
     return LD.listings(town).then(function (rows) {
-      rows = rows.filter(function (r) { return !cat || r.c === cat; });
+      var cats = root.getAttribute("data-cats"); cats = cats ? cats.split(",") : null;   // job pages: several categories
+      rows = rows.filter(function (r) { return cats ? cats.indexOf(r.c) > -1 : (!cat || r.c === cat); });
       rows.sort(function (a, b) { var pa = a.tier === "premium" ? 1 : 0, pb = b.tier === "premium" ? 1 : 0; return pb - pa || a.n.localeCompare(b.n, "en-GB"); });
       if (!rows.length) return;
       root.textContent = "";
@@ -15,7 +16,7 @@
         var href = prem ? LD.profileUrl(l) : "search.html?id=" + encodeURIComponent(l.id) + "&town=" + l.t;
         var row = LD.el("div", { class: "lrow" + (prem ? " prem" : "") });
         row.appendChild(LD.el("span", { class: "i", text: String(i + 1) }));
-        var mid = LD.el("div", {}, [LD.el("a", { class: "main", href: href, text: l.n }), LD.el("span", { class: "a", text: (town ? "" : (idx.towns[l.t] ? idx.towns[l.t].name + " · " : "")) + (cat ? "" : (idx.cats[l.c] || "") + " · ") + l.a + (l.p ? ", " + l.p : "") }), LD.stars(l, R)]);
+        var mid = LD.el("div", {}, [LD.el("a", { class: "main", href: href, text: l.n }), LD.el("span", { class: "a", text: (town ? "" : (idx.towns[l.t] ? idx.towns[l.t].name + " · " : "")) + (cat ? "" : (idx.cats[l.c] || "") + " · ") + LD.addr(l, idx.towns) }), LD.stars(l, R)]);
         if (prem) mid.insertBefore(LD.el("span", { class: "badge premium", text: "Premium" }), mid.firstChild);
         row.appendChild(mid); row.appendChild(LD.el("span", { class: "go", text: prem ? "Profile ›" : "Map ›" })); root.appendChild(row);
       });

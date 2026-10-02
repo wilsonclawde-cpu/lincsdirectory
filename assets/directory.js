@@ -2,7 +2,9 @@
    Data lives in data/index.json (counts, towns, categories, featured) and data/listings-<district>.json.
    Every listing has f = live_from (ISO date); the client only shows listings with f <= today, so the
    drip schedule needs no daily redeploy. Fields: id,n,a,t,p,la,lo,c,s,f,tier (+ph,w,desc,img,hrs on premium).
-   Ratings live in data/ratings.json (moderated by hand, loaded lazily); premium listings have a static profile page b-<slug>-<town>.html. */
+   Ratings live in data/ratings.json (moderated by hand, loaded lazily); premium listings have a static profile page b-<slug>-<town>.html.
+   Optional fields: ph (phone from OpenStreetMap or the business), cov (service-area business: array of town ids it covers, no street
+   address shown), ax (1 = address derived from the map: shown as "near ..."). */
 window.LD = (function () {
   var BASE = (document.querySelector('meta[name="ld-base"]') || {}).content || "";
   function pad(n) { return (n < 10 ? "0" : "") + n; }
@@ -58,7 +60,7 @@ window.LD = (function () {
         return getJSON(BASE + "data/" + f.file).then(function (rows) { rows.forEach(function (r) { r.d = f.district; }); return rows; });
       })).then(function (parts) {
         var all = [];
-        parts.forEach(function (p) { p.forEach(function (r) { if (isLive(r) && (!town || r.t === town)) all.push(r); }); });
+        parts.forEach(function (p) { p.forEach(function (r) { if (isLive(r) && (!town || r.t === town || (r.cov && r.cov.indexOf(town) > -1))) all.push(r); }); });
         return all;
       });
     });
@@ -83,8 +85,16 @@ window.LD = (function () {
     pub: { c: ["pub"] }, pint: { c: ["pub"] }, beer: { c: ["pub"] }, drink: { c: ["pub"] }, bar: { c: ["pub"] }, inn: { c: ["pub", "hotel"] }, nightclub: { c: ["pub"] }, club: { c: ["pub", "venue", "leisure"] },
     hotel: { c: ["hotel"] }, stay: { c: ["hotel"] }, room: { c: ["hotel"] }, bb: { c: ["hotel"] }, "b&b": { c: ["hotel"] }, guesthouse: { c: ["hotel"] }, accommodation: { c: ["hotel"] },
     haircut: { c: ["hair"] }, hair: { c: ["hair"] }, barber: { c: ["hair"] }, salon: { c: ["hair"] }, hairdresser: { c: ["hair"] }, nails: { c: ["hair"] }, beauty: { c: ["hair"] }, beautician: { c: ["hair"] }, tattoo: { c: ["hair"] }, spa: { c: ["hair", "leisure"] },
-    garage: { c: ["motor"] }, mechanic: { c: ["motor"] }, mot: { c: ["motor"] }, tyres: { c: ["motor"] }, car: { c: ["motor"] }, petrol: { c: ["motor"] }, fuel: { c: ["motor"] }, diesel: { c: ["motor"] }, carwash: { c: ["motor"] },
-    plumber: { c: ["trade", "home"] }, plumbing: { c: ["trade", "home"] }, electrician: { c: ["trade", "home"] }, builder: { c: ["trade", "home"] }, roofer: { c: ["trade", "home"] }, joiner: { c: ["trade"] }, carpenter: { c: ["trade"] }, decorator: { c: ["trade"] }, heating: { c: ["trade", "home"] }, boiler: { c: ["trade", "home"] },
+    garage: { c: ["garage", "motor"] }, mechanic: { c: ["garage", "motor"] }, mot: { c: ["garage", "motor"] }, tyres: { c: ["garage", "motor"] }, car: { c: ["garage", "motor", "carwash"] }, petrol: { c: ["motor"] }, fuel: { c: ["motor"] }, diesel: { c: ["motor"] }, carwash: { c: ["carwash", "motor"] },
+    plumber: { c: ["plumb", "trade"] }, plumbing: { c: ["plumb", "trade"] }, electrician: { c: ["elec", "trade"] }, electrical: { c: ["elec", "trade"] }, builder: { c: ["build", "trade"] }, roofer: { c: ["build", "trade"] }, roofing: { c: ["build", "trade"] }, joiner: { c: ["build", "trade"] }, carpenter: { c: ["build", "trade"] }, decorator: { c: ["build", "trade"] }, plasterer: { c: ["build", "trade"] }, handyman: { c: ["build", "trade"] }, heating: { c: ["plumb", "trade"] }, boiler: { c: ["plumb", "trade"] }, gas: { c: ["plumb"] }, drain: { c: ["plumb", "clean"] }, drains: { c: ["plumb", "clean"] },
+    gardener: { c: ["garden"] }, gardening: { c: ["garden"] }, landscaper: { c: ["garden"] }, landscaping: { c: ["garden"] }, lawn: { c: ["garden"] }, grass: { c: ["garden"] }, hedge: { c: ["garden"] }, tree: { c: ["garden"] }, fencing: { c: ["garden", "build"] }, patio: { c: ["garden", "build"] }, driveway: { c: ["garden", "build"] },
+    valet: { c: ["carwash"] }, valeting: { c: ["carwash"] }, wash: { c: ["carwash"] }, tyre: { c: ["garage", "motor"] }, puncture: { c: ["garage", "motor"] }, brakes: { c: ["garage", "motor"] }, servicing: { c: ["garage", "motor"] }, exhaust: { c: ["garage", "motor"] }, bodyshop: { c: ["garage", "motor"] }, windscreen: { c: ["garage", "motor"] },
+    cleaning: { c: ["clean", "serv"] }, cleaners: { c: ["clean", "serv"] }, domestic: { c: ["clean"] }, oven: { c: ["clean", "appl"] }, removals: { c: ["remov"] }, removal: { c: ["remov"] }, van: { c: ["remov"] }, movers: { c: ["remov"] }, rubbish: { c: ["remov"] }, waste: { c: ["remov"] }, skip: { c: ["remov"] },
+    appliance: { c: ["appl"] }, appliances: { c: ["appl"] }, washing: { c: ["appl", "plumb"] }, fridge: { c: ["appl"] }, freezer: { c: ["appl"] }, dishwasher: { c: ["appl", "plumb"] }, laptop: { c: ["appl"] }, computer: { c: ["appl"] }, computers: { c: ["appl"] }, aerial: { c: ["appl", "elec"] },
+    locks: { c: ["lock"] }, lock: { c: ["lock"] }, keys: { c: ["lock"] }, key: { c: ["lock"] },
+    groomer: { c: ["petserv"] }, grooming: { c: ["petserv", "hair"] }, kennels: { c: ["petserv"] }, kennel: { c: ["petserv"] }, cattery: { c: ["petserv"] }, boarding: { c: ["petserv"] }, walker: { c: ["petserv"] },
+    tutor: { c: ["tutor"] }, tuition: { c: ["tutor"] }, lessons: { c: ["tutor"] }, lesson: { c: ["tutor"] }, instructor: { c: ["tutor"] }, dance: { c: ["tutor", "leisure"] },
+    photographer: { c: ["photo"] }, photography: { c: ["photo"] }, photos: { c: ["photo"] }, dj: { c: ["photo"] }, entertainer: { c: ["photo"] }, events: { c: ["photo", "venue", "cater"] },
     pharmacy: { c: ["health"] }, chemist: { c: ["health"] }, prescription: { c: ["health"] }, dentist: { c: ["health"] }, optician: { c: ["health"] }, glasses: { c: ["health"] }, doctor: { c: ["health"] }, physio: { c: ["health"] }, health: { c: ["health"] },
     vet: { c: ["pets"] }, vets: { c: ["pets"] }, pet: { c: ["pets"] }, dog: { c: ["pets"] }, cat: { c: ["pets"] },
     estate: { c: ["estate"] }, letting: { c: ["estate"] }, lettings: { c: ["estate"] }, house: { c: ["estate"] }, property: { c: ["estate"] }, mortgage: { c: ["prof", "estate"] },
@@ -97,7 +107,7 @@ window.LD = (function () {
     catering: { c: ["cater"] }, caterer: { c: ["cater"] }, buffet: { c: ["cater"] },
     supermarket: { c: ["super"] }, grocery: { c: ["super", "food"] }, groceries: { c: ["super", "food"] }, convenience: { c: ["super"] }, newsagent: { c: ["super"] }, milk: { c: ["super"] }, "co-op": { c: ["super"] }, coop: { c: ["super"] }, tesco: { c: ["super"] }, spar: { c: ["super"] },
     butcher: { c: ["food"] }, butchers: { c: ["food"] }, bakery: { c: ["food", "cafe"] }, baker: { c: ["food", "cafe"] }, bread: { c: ["food", "cafe"] }, deli: { c: ["food"] }, farmshop: { c: ["food"] }, greengrocer: { c: ["food"] }, wine: { c: ["food", "pub"] }, offlicence: { c: ["food", "super"] }, sweets: { c: ["food"] },
-    florist: { c: ["home", "shop"] }, flowers: { c: ["home", "shop"] }, garden: { c: ["home"] }, diy: { c: ["home"] }, hardware: { c: ["home"] }, furniture: { c: ["home"] }, carpet: { c: ["home"] }, kitchen: { c: ["home", "rest"] }, locksmith: { c: ["home", "serv"] },
+    florist: { c: ["home", "shop"] }, flowers: { c: ["home", "shop"] }, garden: { c: ["garden", "home"] }, diy: { c: ["home"] }, hardware: { c: ["home"] }, furniture: { c: ["home"] }, carpet: { c: ["home", "build"] }, kitchen: { c: ["home", "build", "rest"] }, locksmith: { c: ["lock"] },
     shop: { c: ["shop", "super", "food", "home"] }, shopping: { c: ["shop"] }, gift: { c: ["shop"] }, gifts: { c: ["shop"] }, clothes: { c: ["shop"] }, clothing: { c: ["shop"] }, shoes: { c: ["shop"] }, jewellery: { c: ["shop"] }, jeweller: { c: ["shop"] }, phone: { c: ["shop"] }, charity: { c: ["shop"] }, books: { c: ["shop"] }, toys: { c: ["shop"] },
     office: { c: ["office"] }, offices: { c: ["office"] }, desk: { c: ["office"] }, coworking: { c: ["office"] }, workspace: { c: ["office"] }, meeting: { c: ["office", "venue"] }, boardroom: { c: ["office"] }, storage: { c: ["office", "serv"] }, printing: { c: ["office", "serv"] },
     laundry: { c: ["serv"] }, laundrette: { c: ["serv"] }, drycleaning: { c: ["serv"] }, cleaner: { c: ["serv"] }, funeral: { c: ["serv"] }, travel: { c: ["serv"] }, driving: { c: ["serv"] }, postoffice: { c: ["serv", "super"] }, post: { c: ["serv", "super"] }, taxi: { c: ["serv"] }, repair: { c: ["serv", "motor", "home"] }
@@ -158,11 +168,12 @@ window.LD = (function () {
     return rows;
   }
   function search(rows, opts) {
-    var tokens = opts.tokens || [], cat = opts.cat || "", catNames = opts.catNames || {};
+    var tokens = opts.tokens || [], cat = opts.cat || "", cats = opts.cats || null, catNames = opts.catNames || {};
     var out = [];
     for (var i = 0; i < rows.length; i++) {
       var l = rows[i];
       if (cat && l.c !== cat) continue;
+      if (cats && cats.indexOf(l.c) < 0) continue;
       var s = score(l, tokens, catNames);
       if (!s) continue;
       l._s = s;
@@ -195,6 +206,12 @@ window.LD = (function () {
     return n;
   }
   function fmt(n) { return n.toLocaleString("en-GB"); }
+  // Address line: service-area businesses show the towns they cover; map-derived locations are "near ...". Mirrors addr_text() in build/make_site.py.
+  function addr(l, towns) {
+    if (l.cov && l.cov.length) { var names = l.cov.map(function (t) { return towns && towns[t] ? towns[t].name : t; }); return "Covers " + (names.length > 1 ? names.slice(0, -1).join(", ") + " and " + names[names.length - 1] : names[0]); }
+    if (l.ax) return "Near " + l.a + " (map location)";
+    return l.a + (l.p ? ", " + l.p : "");
+  }
   function claimUrl(l) { return BASE + "claim.html?id=" + encodeURIComponent(l.id) + "&name=" + encodeURIComponent(l.n) + "&town=" + encodeURIComponent(l.t); }
   function sourceNote(l) {
     if (l.s === "fsa") return "Listed from Food Standards Agency public data (OGL v3.0).";
@@ -202,6 +219,6 @@ window.LD = (function () {
     if (l.s === "aide") return "Listed by Aide, TAG Sleaford's directory, from public records.";
     return "Details supplied by the business.";
   }
-  return { TODAY: TODAY, BASE: BASE, index: index, listings: listings, nearest: nearest, isLive: isLive, liveCounts: liveCounts, parseQuery: parseQuery, search: search, sortResults: sortResults, miles: miles, el: el, fmt: fmt, claimUrl: claimUrl, sourceNote: sourceNote, SYN: SYN,
+  return { TODAY: TODAY, BASE: BASE, index: index, listings: listings, nearest: nearest, isLive: isLive, liveCounts: liveCounts, parseQuery: parseQuery, search: search, sortResults: sortResults, miles: miles, el: el, fmt: fmt, claimUrl: claimUrl, sourceNote: sourceNote, SYN: SYN, addr: addr,
     ratings: ratings, stars: stars, rateUrl: rateUrl, profileUrl: profileUrl, slug: slug };
 })();
