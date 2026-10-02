@@ -82,7 +82,7 @@ To remove a listing: delete the record from its district file and subtract 1 fro
 
 ## Pending / not yet done
 
-* Custom domain: add a `CNAME` file containing `lincsdirectory.co.uk` and set the custom domain in Pages **after** DNS resolves to GitHub Pages; then tick Enforce HTTPS.
+* Custom domain: DONE 2026-10-02 (GoDaddy A records → GitHub Pages IPs, www CNAME → wilsonclawde-cpu.github.io, `CNAME` file in repo, Enforce HTTPS ticked). The github.io preview URL now redirects to https://lincsdirectory.co.uk/.
 * Stripe Payment Link for the £4.99 Featured listing: paste it into `STRIPE_PREMIUM_LINK` in `claim.html`.
 * A lincsdirectory.co.uk mailbox (then update footer/privacy/terms contact routes).
 * Cross-link from Aide's directory page to LincsDirectory (owner to direct).
