@@ -78,7 +78,7 @@ private Business Centre folder, not in the repo). Edit the generator, re-run it,
 
 97 jobs in 14 groups (Home repairs & plumbing, Heating & gas, Electrical, Building/roofing/decorating, Garden & outdoor, Car care, Cleaning,
 Appliances & gadgets, Locks & security, Moving/storage/waste, Hair & beauty, Pets, Events, Tutoring/lessons/other). Each job: `slug`, `title`,
-`group`, `door` (`broken` or `need`), `cats` (listing categories whose businesses do the job, primary first), `say` (4–10 everyday phrasings
+`group`, `door` (`broken` or `need`), `cats` (listing categories whose businesses do the job, primary first; never the generic `trade` bucket, so a blacksmith is not offered as a plumber), `say` (4–10 everyday phrasings
 for the matcher), `guide` (3–4 original, factual paragraphs, 150–220 words: what's involved / what to ask and have ready / safety and good to
 know; **no prices, statistics or claims about any business**), `faq` (one job-specific Q&A; the generator adds two generic ones), `urgent`
 (emergency banner: gas 0800 111 999, danger to life 999). Safety wording follows the public bodies named (Gas Safe Register, National Gas
@@ -210,7 +210,7 @@ Rules in `make_site.py`:
 * A town x category page is **indexable** only when ≥ 8 listings are live today (`MIN_TOWNCAT_INDEX`); town and category hubs need ≥ 5 (`MIN_HUB_INDEX`). Otherwise the page carries `noindex,follow` and is left out of `sitemap.xml` (it is still linked from `browse.html`). On 2026-10-02: 109 indexable pages (9 core + 2 profiles + 98 landing), 124 noindex (was 14 / 214).
 * Each page's static list is the listings live on the build date; the lead paragraph, counts, FAQ answers, star rows and ItemList JSON-LD are computed from the data, so nothing is invented.
 * The generator asserts: exactly one `<h1>` per page, title ≤ 60 and description ≤ 160 characters, every page ends `</html>`, every category has page metadata, every job maps to known categories, `ratings.json` is consistent, Premium photos exist, profile filenames are unique.
-* 2026-10-02 build: 851 pages (727 indexable: 12 core, 2 profiles, 97 job hubs, 482 job x town, 134 landing; 124 noindex landing pages); 1,636 live listings of 6,617.
+* 2026-10-02 build (v4.1): 851 pages, 677 indexable (12 core, 2 profiles, 97 job hubs, 432 job x town, 134 landing) and 174 noindex (50 job x town with fewer than 2 pros, 124 landing); 1,636 live listings of 6,617. Job x town URLs are pinned in `build/jobtown-published.txt` so a published URL never disappears on a rebuild (it goes noindex instead).
 
 ## Deploying
 
