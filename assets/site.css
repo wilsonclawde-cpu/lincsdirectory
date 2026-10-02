@@ -127,11 +127,11 @@ a.tile:hover{transform:translateY(-2px);border-color:var(--green)}
 /* ads */
 .ads{display:grid;grid-template-columns:1fr 1fr;gap:1rem}
 @media (max-width:760px){.ads{grid-template-columns:1fr}}
-.ad{position:relative;border:1.5px solid var(--line);border-radius:var(--r);padding:1.3rem 1.3rem 1.3rem;background:var(--paper);display:grid;grid-template-columns:auto 1fr;gap:1rem;align-items:center}
+.ad{position:relative;border:1.5px solid var(--line);border-radius:var(--r);padding:2.5rem 1.3rem 1.3rem;background:var(--paper);display:grid;grid-template-columns:auto 1fr;gap:1rem;align-items:center}
 .ad .mark{width:56px;height:56px;border-radius:14px;display:grid;place-items:center;flex:none}
 .ad h3{font-size:1.15rem;margin-bottom:.2rem}
 .ad p{margin:0 0 .6rem;font-size:.95rem}
-.ad .badge.ad{position:absolute;top:.7rem;right:.8rem}
+.ad .badge.ad{position:absolute;top:.8rem;left:1.3rem}
 .ad.kbc{background:linear-gradient(135deg,#fff,#f1f7ea)}
 .ad.aide{background:linear-gradient(135deg,#fff,#f4f7f9)}
 

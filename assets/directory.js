@@ -109,8 +109,9 @@ window.LD = (function () {
     for (var i = 0; i < tokens.length; i++) {
       var t = tokens[i], s = SYN[t], best = 0;
       if (s) {
-        if (s.c.indexOf(l.c) > -1) best = Math.max(best, s.c[0] === l.c ? 30 : 18);
-        if (s.k) for (var k = 0; k < s.k.length; k++) if (name.indexOf(s.k[k]) > -1) { best = Math.max(best, 40); break; }
+        if (s.k) {   // cuisine-style words: the name (or Featured description) must contain a keyword
+          for (var k = 0; k < s.k.length; k++) if (name.indexOf(s.k[k]) > -1 || desc.indexOf(s.k[k]) > -1) { best = Math.max(best, s.c.indexOf(l.c) > -1 ? 45 : 35); break; }
+        } else if (s.c.indexOf(l.c) > -1) best = Math.max(best, s.c[0] === l.c ? 30 : 18);
       }
       if (name.indexOf(t) === 0) best = Math.max(best, 60);
       else if (name.indexOf(t) > -1) best = Math.max(best, 45);
@@ -168,6 +169,7 @@ window.LD = (function () {
   function sourceNote(l) {
     if (l.s === "fsa") return "Listed from Food Standards Agency public data (OGL v3.0).";
     if (l.s === "osm") return "Listed from OpenStreetMap data (© OpenStreetMap contributors, ODbL).";
+    if (l.s === "aide") return "Listed by Aide, TAG Sleaford's directory, from public records.";
     return "Details supplied by the business.";
   }
   return { TODAY: TODAY, BASE: BASE, index: index, listings: listings, liveCounts: liveCounts, parseQuery: parseQuery, search: search, sortResults: sortResults, miles: miles, el: el, fmt: fmt, claimUrl: claimUrl, sourceNote: sourceNote, SYN: SYN };
