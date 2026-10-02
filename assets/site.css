@@ -127,11 +127,11 @@ a.tile:hover{transform:translateY(-2px);border-color:var(--green)}
 /* ads */
 .ads{display:grid;grid-template-columns:1fr 1fr;gap:1rem}
 @media (max-width:760px){.ads{grid-template-columns:1fr}}
-.ad{position:relative;border:1.5px solid var(--line);border-radius:var(--r);padding:2.5rem 1.3rem 1.3rem;background:var(--paper);display:grid;grid-template-columns:auto 1fr;gap:1rem;align-items:center}
+.ad{position:relative;border:1.5px solid var(--line);border-radius:var(--r);padding:1rem 1.3rem 1.3rem;background:var(--paper);display:grid;grid-template-columns:auto 1fr;gap:1rem;align-items:center}
 .ad .mark{width:56px;height:56px;border-radius:14px;display:grid;place-items:center;flex:none}
 .ad h3{font-size:1.15rem;margin-bottom:.2rem}
 .ad p{margin:0 0 .6rem;font-size:.95rem}
-.ad .badge.ad{position:absolute;top:.8rem;left:1.3rem}
+.ad .badge.ad{grid-column:1/-1;justify-self:start;margin-bottom:-.2rem}
 .ad.kbc{background:linear-gradient(135deg,#fff,#f1f7ea)}
 .ad.aide{background:linear-gradient(135deg,#fff,#f4f7f9)}
 
@@ -203,9 +203,10 @@ form.enquiry .check input{width:1.2rem;height:1.2rem;margin-top:.2rem}
 .chiprow{display:flex;flex-wrap:wrap;gap:.45rem;align-items:center;margin-bottom:.6rem}
 .chiprow .lab{font-size:.8rem;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin-right:.3rem}
 .chiprow select{font:700 .92rem "Manrope",sans-serif;padding:.45rem .8rem;border-radius:99px;border:1.5px solid var(--ink);background:#fff;color:var(--ink)}
-.stage{display:grid;grid-template-columns:minmax(300px,480px) 1fr;grid-template-areas:"list map" "list ad";gap:1.4rem;padding:1rem 0 3rem;align-items:start}
+.stage{display:grid;grid-template-columns:minmax(300px,480px) 1fr;grid-template-areas:"list map";gap:1.4rem;padding:1rem 0 3rem;align-items:start}
 .listcol{grid-area:list;min-width:0}
-.mapad{grid-area:ad}
+.mapcol{grid-area:map;position:sticky;top:1rem}
+.mapad{margin-top:1rem}
 .status{font-size:.97rem;color:var(--muted);margin:0 0 .8rem;min-height:1.5em}
 .status strong{color:var(--ink)}
 .list{display:grid;gap:.8rem}
@@ -226,7 +227,7 @@ form.enquiry .check input{width:1.2rem;height:1.2rem;margin-top:.2rem}
 .more{margin-top:1rem;text-align:center}
 .empty-state{background:var(--paper);border:2px dashed var(--line);border-radius:var(--r);padding:1.3rem}
 .empty-state h3{margin-bottom:.4rem}
-#map{grid-area:map;height:640px;border:2px solid var(--ink);border-radius:var(--r);overflow:hidden;position:sticky;top:1rem;background:#dfe7df;z-index:1}
+#map{height:min(560px,calc(100vh - 16rem));min-height:360px;border:2px solid var(--ink);border-radius:var(--r);overflow:hidden;background:#dfe7df;z-index:1}
 .pin{width:24px;height:24px;border-radius:50% 50% 50% 0;transform:rotate(-45deg);background:var(--lime);border:3px solid var(--ink);box-shadow:0 2px 0 rgba(0,0,0,.25)}
 .pin.on{background:var(--ink);border-color:var(--lime)}
 .pin.prem{background:var(--coral);border-color:#fff}
@@ -234,7 +235,9 @@ form.enquiry .check input{width:1.2rem;height:1.2rem;margin-top:.2rem}
 .sidead{margin-top:1rem}
 @media (max-width:900px){
   .stage{grid-template-columns:1fr;grid-template-areas:"map" "list" "ad"}
-  #map{height:300px;position:static}
+  .mapcol{display:contents}
+  #map{grid-area:map;height:300px;min-height:0}
+  .mapad{grid-area:ad;margin-top:0}
 }
 
 /* footer */
