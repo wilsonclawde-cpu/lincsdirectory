@@ -1,17 +1,28 @@
 # LincsDirectory
 
-The Lincolnshire business directory, the marketing front door for TAG Sleaford Ltd (Kesteven Business Centre, Aide).
+The Lincolnshire local directory, the marketing front door for TAG Sleaford Ltd (Kesteven Business Centre, Aide). Since 2 October 2026 it is
+**need-led**: three doors on the home page, **Where to?** (things to do, eat & drink, shops), **What's broken?** (repairs & fixes) and
+**What do you need?** (things to get done), a natural-language search that maps everyday phrases ("wash my car", "boiler broke") to **job
+pages**, a **Get local help** request form, and a **For businesses** sign-up for tradespeople and services. Everything from v3 (directory,
+Premium profiles, moderated ratings, suggest / claim / remove, the drip schedule, the SEO landing pages) is still here.
 Static site, hosted on GitHub Pages. Live at https://lincsdirectory.co.uk/ (repo `wilsonclawde-cpu/lincsdirectory`).
 
 Everything in this repo except `data/`, `img/`, `CNAME` and the icons/OG images is **generated** by `build/make_site.py` (kept in the
 private Business Centre folder, not in the repo). Edit the generator, re-run it, upload the output. Do not hand-edit the HTML.
-`assets/site.css` and `assets/directory.js` are hand-maintained; `assets/home.js` and `assets/landing.js` are written by the generator.
+`assets/site.css`, `assets/directory.js` and `assets/intent.js` are hand-maintained; `assets/home.js`, `assets/landing.js`, `assets/help.js` and
+`data/jobs.json` are written by the generator.
 
 ## Pages
 
 | File | Purpose |
 |---|---|
-| `index.html` | Home: hero search, the three intent cards (Looking for a service / Want to know what's around, with quick chips Things to do, Eat & drink, Shops, Pubs / Need help), Suggest a business, towns (live counts), categories, Premium carousel, claim CTA, Free vs Premium table, house cards for the Business Centre and Aide (tagged "Premium listing"), FAQ (FAQPage JSON-LD) |
+| `index.html` | Home: hero with the natural-language search ("What do you need doing?", live job suggestions from `assets/intent.js`), the **three doors** (Where to? / What's broken? / What do you need?) with job chips and the near-me/town picker, the **Get local help** form, Suggest a business, towns (live counts), categories, Premium carousel, pros CTA, Free vs Premium table, house cards for the Business Centre and Aide (tagged "Premium listing"), FAQ (FAQPage JSON-LD) |
+| `where.html` | The Where to? door: going-out categories with live counts, the big towns with their things-to-do / eat / drink pages, near me |
+| `jobs.html` | All jobs: the two doors (#broken, #need) as cards, then every job by group (#plumbing, #heating, … anchors used by the footer), with a job search box |
+| `<job>.html` (97) | **Job hub page**, e.g. `fix-a-leak.html`: H1 "Fix a leak in Lincolnshire", emergency banner on urgent jobs, the four guidance paragraphs from `build/jobs.py`, town selector, related jobs, categories, "Local pros who do this" (live listings in the job's categories, Premium first, refreshed by `landing.js`), Get local help form prefilled with the job, "Are you a pro?" CTA, 3 FAQs. JSON-LD: BreadcrumbList, WebPage, FAQPage, Service (no prices), ItemList of pros (name, locality, geo; no ratings). Always indexable |
+| `<job>-in-<town>.html` (up to the budget, see rules) | **Job x town page**, e.g. `fix-a-leak-in-sleaford.html`: shorter guidance (what's involved + safety) linking to the hub, the pros for that town (including service-area businesses that cover it), nearby towns, form prefilled with job + town. Generated only where the job's primary category has >= 1 live business in that town; **indexable only with >= 2 live pros** (`MIN_JOBTOWN_INDEX`), otherwise `noindex,follow` and out of the sitemap |
+| `help.html` | Standalone Get local help request (noindex). Deep links: `help.html?job=<slug>&town=<townId>&need=<text>&when=urgent` |
+| `pros.html` | For businesses: free listing vs Premium £4.99, the sign-up form (plan, business, main category, jobs ticklist from `jobs.py`, "I have a shop" vs "I cover an area, no shop address", towns covered, contact, website, credentials (shown as supplied, never verified), consent). Posts to Web3Forms, subject `LincsDirectory pro signup: <business> (<plan>)`. `?job=<slug>&town=<id>&plan=premium` pre-tick |
 | `search.html` | Search + map + list. Deep links: `?q=…&town=<id>&cat=<id>&id=<listingId>`; `#near` triggers "near me". Every card has a star row; Premium cards link to their profile page |
 | `b-<slug>-<town>.html` (one per Premium listing) | **Premium profile page**: photo, Premium tag, address + directions, phone, hours, description, prominent "Visit website" (`rel="sponsored noopener"`), star row + latest approved reviews + Rate button, mini map, More in <town>, breadcrumbs, upgrade CTA. JSON-LD: BreadcrumbList + a LocalBusiness-family node with the supplied fields only (no ratings). Currently `b-glow-sleaford.html` and `b-kesteven-business-centre-sleaford.html` |
 | `rate.html` | Rate a business: `rate.html?id=<listingId>&town=<townId>`. 1–5 stars (radio group), optional comment (≤400), optional first name, optional email, consent box, honeypot. Posts to Web3Forms, subject `LincsDirectory rating: <name> (<id>) <stars>★`. noindex; nothing is auto-published |
@@ -22,9 +33,11 @@ private Business Centre folder, not in the repo). Edit the generator, re-run it,
 | `<town>-business-directory.html` (22) | Town hub pages, e.g. `sleaford-business-directory.html` |
 | `<category>-lincolnshire.html` (22) | Category hub pages, e.g. `things-to-do-lincolnshire.html` |
 | `<category>-in-<town>.html` (176) | Town x category pages, e.g. `things-to-do-in-sleaford.html` |
-| `assets/site.css`, `assets/app.js`, `assets/directory.js`, `assets/home.js`, `assets/landing.js` | Styles, header/menu/reveal, data layer + search engine + ratings/star rows + profile URL, home page, landing-page refresh |
+| `assets/site.css`, `assets/app.js`, `assets/directory.js`, `assets/home.js`, `assets/landing.js` | Styles, header/menu/reveal, data layer + search engine + ratings/star rows + profile URL + `LD.addr()` (service-area / map-derived addresses), home page (counts, near me, intent suggestions), landing + job-page list refresh |
+| `assets/intent.js`, `data/jobs.json` | The **intent matcher**: everyday phrases -> jobs. `data/jobs.json` is the compact job map (slug, title, group, categories, door, phrasings) written from `build/jobs.py`. Used by the home search, `search.html` (job matches above results; widens the search to the job's categories when the text match is thin), `jobs.html` and `help.html`. Unit test: `node build/test_intent.js ../site` (70 phrases, results in `build/intent-test-results.json`) |
+| `assets/help.js` | The Get local help form handler (every `form.helpform` on a page). Subject `LincsDirectory job request: <job> – <town> [<urgency>]` |
 | `data/index.json` | Counts per go-live date, towns, categories, featured (Premium) listings, file list |
-| `data/listings-<district>.json` | Listings for one district (7 files, lazy-loaded) |
+| `data/listings-<district>.json` | Listings for one district (7 files, lazy-loaded). `files[].towns` includes every town a record covers (`cov`) so the lazy loader finds service-area businesses |
 | `data/ratings.json` | Approved customer ratings (see below). `{}` until the first one is approved |
 | `img/` | Photos for Premium listings (WebP, ~1024 px wide, under 200 KB). `img/tag-sleaford.webp` is the Business Centre |
 | `sitemap.xml`, `robots.txt`, `site.webmanifest`, icons, `og-*.png` | SEO / brand (from `build/brand.py`; brand pack in `../brand/`) |
@@ -56,7 +69,64 @@ private Business Centre folder, not in the repo). Edit the generator, re-run it,
 | `s` | source: `fsa`, `osm`, `aide`, `owner` |
 | `f` | live_from (ISO date). The site only shows listings with `f <= today`: this is the drip schedule |
 | `tier` | `free` or `premium` |
-| premium only | `ph` phone, `w` website URL, `desc` description, `img` image path (e.g. `img/tag-sleaford.webp`), `hrs` opening hours (free text; "Mon–Fri 8am–4.30pm" style is also turned into schema.org openingHours) |
+| `ph` (optional, any tier) | Business phone number. On free listings only ever from the OpenStreetMap `phone`/`contact:phone` tag (public data; 354 added on 2026-10-02); shown on cards, job-page rows and profiles |
+| `cov` (optional) | **Service-area business**: array of town ids it covers, e.g. `["sleaford","grantham"]`. `t` is the first town; `a` and `p` are empty (never a home address); `la`/`lo` are the first town's centre (from `index.json` → `towns`). Shows as "Covers Sleaford and Grantham"; counted for every town in `cov` on job x town pages, town pages and search; JSON-LD uses `areaServed` instead of a street address |
+| `ax` (optional) | `1` = the address was derived from the map (OSM element with no `addr:*` tags: nearest named street + nearest village). Shown as "Near West Street, Kirton (map location)"; JSON-LD omits `streetAddress` |
+| premium only | `w` website URL, `desc` description, `img` image path (e.g. `img/tag-sleaford.webp`), `hrs` opening hours (free text; "Mon–Fri 8am–4.30pm" style is also turned into schema.org openingHours) |
+
+## Jobs taxonomy (`build/jobs.py`, single source of truth)
+
+97 jobs in 14 groups (Home repairs & plumbing, Heating & gas, Electrical, Building/roofing/decorating, Garden & outdoor, Car care, Cleaning,
+Appliances & gadgets, Locks & security, Moving/storage/waste, Hair & beauty, Pets, Events, Tutoring/lessons/other). Each job: `slug`, `title`,
+`group`, `door` (`broken` or `need`), `cats` (listing categories whose businesses do the job, primary first), `say` (4–10 everyday phrasings
+for the matcher), `guide` (3–4 original, factual paragraphs, 150–220 words: what's involved / what to ask and have ready / safety and good to
+know; **no prices, statistics or claims about any business**), `faq` (one job-specific Q&A; the generator adds two generic ones), `urgent`
+(emergency banner: gas 0800 111 999, danger to life 999). Safety wording follows the public bodies named (Gas Safe Register, National Gas
+Emergency Service, NICEIC/NAPIT, OFTEC, DVSA, Environment Agency); every page says "LincsDirectory doesn't vet or endorse businesses — always
+check credentials and get a written quote."
+
+**Adding a job**: append a dict to `JOBS` in `build/jobs.py` (keep slugs stable once published; if it needs a new listing category add that to
+`categories.py` first and give it page metadata + an icon in `make_site.py`), run `node build/test_intent.js ../site` after `make_site.py`
+has rewritten `data/jobs.json`, then upload `<job>.html`, any `<job>-in-<town>.html`, `jobs.html`, `browse.html`, `sitemap.xml`,
+`data/jobs.json`. Page budget: the expansion is capped at `JOB_PAGE_BUDGET` (600) new pages; job x town pages are generated most-pros-first
+until the budget is used. Lower `MIN_JOBTOWN_INDEX` only if you want thinner pages indexed (don't).
+
+## Service categories and service-area listings (2026-10-02)
+
+13 categories were added for the supply side: Plumbers & heating (`plumb`), Electricians (`elec`), Builders & handyman trades (`build`),
+Gardeners & landscapers (`garden`), MOT, servicing & tyres (`garage`), Car washes & valeting (`carwash`), Cleaners (`clean`), Removals &
+storage (`remov`), Appliance & gadget repair (`appl`), Locksmiths (`lock`), Pet services (`petserv`), Tutors & lessons (`tutor`),
+Photographers & events (`photo`). `categories.SERVICE_CATS` (those 13 + `hair` + `trade`) go live the day they are added instead of
+dripping, because the job pages depend on them. `categories.OSM_SERVICE` maps OpenStreetMap tags to them on a refresh; `SERVICE_RULES`
+moves records out of generic categories by name ("Mill Tyres" motor → garage, "IMO Attended Car Wash" → carwash) and never out of
+restaurants, pubs, hotels etc. The data script `build/add_services.py` applied all of this to the published data, merged the Overpass
+extract `build/osm-services-2026-10-02.json` (shops/garages/car washes/salons etc. with a name and either `addr:*` tags or, for
+premises-type tags only, a map-derived street + village marked `ax`; crafts and offices are only taken with a recorded business address;
+private-individual names, flats and duplicates dropped as before) and wrote `build/add-services-report.json`.
+
+**Service-area businesses** (most tradespeople work from home): add the record by hand with `cov` (see the record format), `a:""`, `p:""`,
+`la`/`lo` = the first town's centre, `s:"owner"`, `f` = today, `c` = the trade's category. Never publish a home address, even if the pro
+sends one. The claim and suggest forms have an "I cover an area, no shop address" box, and `pros.html` asks for the towns covered.
+
+## Operating model for "Get local help" requests
+
+1. A request arrives by email from Web3Forms with subject `LincsDirectory job request: <job> – <town> [<urgency>]` and fields `job`
+   (slug), `job_title`, `need`, `town`, `town_id`, `postcode`, `when`, `name`, `phone`, `email`, `consent`, `page`.
+2. **Only act on it if the consent text is present** ("I agree LincsDirectory can pass my request to local businesses…"); the form cannot be
+   sent without the box ticked, but check anyway. Never forward a request that lacks it.
+3. Francis (or Milson) opens the job page for that town (`<job>-in-<town>.html`, or the hub page's town selector) and forwards the request to
+   listed pros that cover the area and do that job, by email or phone, including the requester's details. Premium listings first. If nobody is
+   listed, use the nearby-town pages. Don't promise the requester a reply; the site already says "they may be in touch".
+4. Log it in a local spreadsheet (not in the repo), suggested columns: `date`, `job_slug`, `job_title`, `town`, `postcode`, `urgency`,
+   `requester_name`, `contact` (phone/email), `need` (free text), `sent_to` (business names / listing ids), `sent_on`, `method`
+   (email/phone), `outcome` (replied / booked / no reply / unknown), `delete_by` (date + 12 months), `notes`.
+5. Delete the row and the email 12 months after the request, or as soon as the requester asks (privacy.html#requests promises this).
+6. Urgent gas/electrical requests: the site has already told them 0800 111 999 / 999; forward quickly but never give technical advice.
+
+Pro sign-ups arrive as `LincsDirectory pro signup: <business> (<plan>)` with `jobs`, `areas`, `premises`, `address`, `credentials`. Check the
+business exists (Companies House, website, public records), add the record (with `cov` if "I cover an area"), set `c` to the main category so
+it appears on the right job pages, and for Premium send the payment link then flip the record as in "How to flip a listing to Premium".
+Credentials are shown only if supplied and are never described as verified.
 
 ## Categories and the "Things to do" rules
 
@@ -126,14 +196,21 @@ To remove a listing: delete the record from its district file and subtract 1 fro
 ```
 cd "Business Centre/Website/lincsdirectory/build"
 python3 make_site.py ../site            # uses today's date; or add --today 2026-11-01 to preview
+python3 qa_static.py ../site            # titles/metas/H1/JSON-LD/internal links/sitemap consistency (0 problems expected)
+LD_LIBRARY_PATH=... python3 qa_browser.py ../site ../screens-v4 [375|768|1440|behaviour]   # Playwright: console, overflow, forms (stubbed), screenshots
+node test_intent.js ../site             # intent matcher unit test (70 phrases)
 python3 brand.py ../site ../brand       # only if the logo/OG images change
+python3 add_services.py ../site ../outreach --date YYYY-MM-DD --osm osm-services-YYYY-MM-DD.json [--dry-run]   # merge a new Overpass service extract
 ```
+Shared rules now live in `build/listing_rules.py` (towns, postcode/village mapping, name tidying, private-individual test, FSA/OSM category
+mapping), imported by `build_listings.py` and `add_services.py`; category rules in `categories.py`; jobs in `jobs.py`.
 
 Rules in `make_site.py`:
 * A town x category page is generated when the dataset will eventually hold ≥ 8 listings for it (`MIN_TOWNCAT_GEN`), capped at 350 pages in total (`MAX_PAGES`; the threshold rises automatically if needed).
 * A town x category page is **indexable** only when ≥ 8 listings are live today (`MIN_TOWNCAT_INDEX`); town and category hubs need ≥ 5 (`MIN_HUB_INDEX`). Otherwise the page carries `noindex,follow` and is left out of `sitemap.xml` (it is still linked from `browse.html`). On 2026-10-02: 109 indexable pages (9 core + 2 profiles + 98 landing), 124 noindex (was 14 / 214).
 * Each page's static list is the listings live on the build date; the lead paragraph, counts, FAQ answers, star rows and ItemList JSON-LD are computed from the data, so nothing is invented.
-* The generator asserts: exactly one `<h1>` per page, title ≤ 60 and description ≤ 160 characters, every page ends `</html>`, every category has page metadata, `ratings.json` is consistent, Premium photos exist, profile filenames are unique.
+* The generator asserts: exactly one `<h1>` per page, title ≤ 60 and description ≤ 160 characters, every page ends `</html>`, every category has page metadata, every job maps to known categories, `ratings.json` is consistent, Premium photos exist, profile filenames are unique.
+* 2026-10-02 build: 851 pages (727 indexable: 12 core, 2 profiles, 97 job hubs, 482 job x town, 134 landing; 124 noindex landing pages); 1,636 live listings of 6,617.
 
 ## Deploying
 
@@ -155,6 +232,8 @@ GitHub web UI only (no CLI): repo → Add file → Upload files → drag the cha
 
 ## Pending / not yet done
 
+* The hair, garage and car-wash jobs share their category with several other jobs, so their town pages list the same businesses under different guidance; if Search Console reports them as duplicates, set `MIN_JOBTOWN_INDEX` higher or restrict those jobs' town pages.
+* Few genuine plumbers/electricians/cleaners are in the public data (OSM has very few in Lincolnshire with an address); those job pages fill up through `pros.html` sign-ups. Prioritise outreach to those trades.
 * Payment link for the £4.99 Premium listing (owner is choosing a provider): paste it into `STRIPE_PREMIUM_LINK` in the claim page block of `make_site.py`, rebuild, upload. Until then the Premium button sends the claim form and you email a link.
 * A lincsdirectory.co.uk mailbox (then update footer/privacy/terms contact routes).
 * GLOW has no photo yet (`img` empty): add one to `img/` and to both records in `data/` when the owner supplies it.
