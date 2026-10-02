@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+<html lang="en-GB">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Search Lincolnshire businesses | LincsDirectory</title>
+<meta name="description" content="Search thousands of Lincolnshire businesses by town and category, with a map. Restaurants, takeaways, pubs, shops, trades and more across Lincs.">
+<link rel="canonical" href="https://lincsdirectory.co.uk/search.html">
+<meta name="ld-base" content="">
+<meta name="theme-color" content="#0B3129">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="LincsDirectory">
+<meta property="og:locale" content="en_GB">
+<meta property="og:title" content="Search Lincolnshire businesses | LincsDirectory">
+<meta property="og:description" content="Search thousands of Lincolnshire businesses by town and category, with a map. Restaurants, takeaways, pubs, shops, trades and more across Lincs.">
+<meta property="og:url" content="https://lincsdirectory.co.uk/search.html">
+<meta property="og:image" content="https://lincsdirectory.co.uk/og-image.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="LincsDirectory wordmark: the Lincolnshire business directory">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Search Lincolnshire businesses | LincsDirectory">
+<meta name="twitter:description" content="Search thousands of Lincolnshire businesses by town and category, with a map. Restaurants, takeaways, pubs, shops, trades and more across Lincs.">
+<meta name="twitter:image" content="https://lincsdirectory.co.uk/og-image.png">
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="favicon.svg">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,600;0,9..144,800;1,9..144,600&family=Manrope:wght@500;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/site.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.css" crossorigin="">
+<script type="application/ld+json">{"@context": "https://schema.org", "@graph": [{"@type": "Organization", "@id": "https://lincsdirectory.co.uk/#org", "name": "LincsDirectory", "legalName": "TAG Sleaford Ltd", "url": "https://lincsdirectory.co.uk/", "logo": "https://lincsdirectory.co.uk/favicon.svg", "telephone": "+44 1522 424963", "address": {"@type": "PostalAddress", "streetAddress": "Kesteven Business Centre, Kesteven Street", "addressLocality": "Sleaford", "addressRegion": "Lincolnshire", "postalCode": "NG34 7DT", "addressCountry": "GB"}, "areaServed": {"@type": "AdministrativeArea", "name": "Lincolnshire"}, "parentOrganization": {"@type": "Organization", "name": "TAG Sleaford Ltd", "url": "https://tagsleaford.com"}}, {"@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Home", "item": "https://lincsdirectory.co.uk/"}, {"@type": "ListItem", "position": 2, "name": "Search", "item": "https://lincsdirectory.co.uk/search.html"}]}, {"@type": "WebPage", "@id": "https://lincsdirectory.co.uk/search.html", "url": "https://lincsdirectory.co.uk/search.html", "name": "Search Lincolnshire businesses | LincsDirectory", "isPartOf": {"@id": "https://lincsdirectory.co.uk/#website"}, "inLanguage": "en-GB"}]}</script>
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+<header class="site">
+  <div class="wrap bar">
+    <a class="logo" href="index.html" aria-label="LincsDirectory home"><svg viewBox="0 0 64 64" aria-hidden="true" focusable="false"><rect width="64" height="64" rx="16" fill="#0F2A24"/><path d="M32 10c-9.9 0-18 7.9-18 17.7C14 41 32 56 32 56s18-15 18-28.3C50 17.9 41.9 10 32 10z" fill="#D4F25A"/><circle cx="32" cy="27" r="6.5" fill="#0F2A24"/><path d="M38 33l6 6" stroke="#0F2A24" stroke-width="4" stroke-linecap="round"/></svg><span class="wm"><b>Lincs</b><span>Directory</span></span></a>
+    <button class="menu-btn" type="button" aria-expanded="false" aria-controls="mainnav">Menu</button>
+    <nav class="main" id="mainnav" aria-label="Main">
+      <a href="search.html" aria-current="page">Search</a>
+      <a href="index.html#towns">Towns</a>
+      <a href="advertise.html">Advertise</a>
+      <a href="about.html">About</a>
+      <a href="claim.html" class="btn small">Claim your listing</a>
+    </nav>
+  </div>
+</header>
+<main id="main">
+
+<section class="searchbar">
+  <div class="wrap">
+    <h1 id="pageTitle">Search Lincolnshire businesses</h1>
+    <form class="search" role="search" id="searchForm" autocomplete="off">
+      <div class="field">
+        <label for="q" class="visually-hidden">What do you need?</label>
+        <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="7" fill="none" stroke="currentColor" stroke-width="2.4"/><path d="M16.5 16.5 21 21" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/></svg>
+        <input id="q" name="q" type="search" placeholder="What do you need? e.g. Indian takeaway, barber, MOT…" enterkeyhint="search">
+      </div>
+      <button class="btn" type="submit">Search</button>
+      <button class="btn light" type="button" id="nearBtn">Near me</button>
+    </form>
+  </div>
+</section>
+<section class="filters">
+  <div class="wrap light">
+    <div class="chiprow" id="townRow" role="group" aria-label="Town"><span class="lab">Town</span>
+      <select id="townSel" aria-label="Choose a town"><option value="">All Lincolnshire</option></select>
+    </div>
+    <div class="chiprow" id="catRow" role="group" aria-label="Category"><span class="lab">Category</span></div>
+  </div>
+</section>
+<section>
+  <div class="wrap stage">
+    <div>
+      <p class="status" id="status" aria-live="polite">Loading listings…</p>
+      <div class="list" id="list"></div>
+      <div class="more" id="more"></div>
+      <div class="sidead"><div class="ad aide" role="complementary" aria-label="Advertisement: Aide business reports">
+  <span class="badge ad">Advertisement</span>
+  <div class="mark" style="background:#1D3B53"><svg viewBox="0 0 64 64" width="36" height="36" aria-hidden="true"><path d="M18 46 32 16l14 30m-22-9h16" fill="none" stroke="#F2B705" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+  <div>
+    <h3>Plain-English business reports from £4.99</h3>
+    <p>Aide checks your website, your online listings and the businesses down the road, then tells you the fixes that matter. Fixed prices, checked by a person.</p>
+    <a class="btn small dark" href="https://aide.tagsleaford.com" rel="noopener sponsored">See Aide reports</a>
+  </div>
+</div></div>
+    </div>
+    <div>
+      <div id="map" role="region" aria-label="Map of results"></div>
+      <div class="sidead"><div class="ad kbc" role="complementary" aria-label="Advertisement: Kesteven Business Centre">
+  <span class="badge ad">Advertisement</span>
+  <div class="mark" style="background:#1D3B53"><svg viewBox="0 0 48 48" width="34" height="34" aria-hidden="true"><path d="M8 40V18l16-10 16 10v22H8z" fill="none" stroke="#F2B705" stroke-width="3" stroke-linejoin="round"/><path d="M20 40V28h8v12" fill="none" stroke="#F2B705" stroke-width="3"/><path d="M14 24h4m12 0h4M14 31h4m12 0h4" stroke="#F2B705" stroke-width="2.5" stroke-linecap="round"/></svg></div>
+  <div>
+    <h3>Offices in Sleaford from £250 a month</h3>
+    <p>Kesteven Business Centre: serviced offices, a meeting room from £15 an hour and a private day office, in Sleaford's old police station. All-inclusive, 24-hour access, parking.</p>
+    <a class="btn small dark" href="https://centre.tagsleaford.com" rel="noopener sponsored">See the offices</a>
+  </div>
+</div></div>
+    </div>
+  </div>
+</section>
+<section class="band dark">
+  <div class="wrap grid c2" style="align-items:center">
+    <div>
+      <h2>Run one of these businesses?</h2>
+      <p style="color:#C6D4C9;margin-top:.6rem">Claim your listing free, or go Featured for £4.99 once: photo, website, phone, hours, first in results, and a free Aide business report.</p>
+    </div>
+    <p style="margin:0"><a class="btn" href="claim.html">Claim or update</a> &nbsp; <a class="btn ghost" style="color:#fff;border-color:#fff" href="claim.html#remove">Remove a listing</a></p>
+  </div>
+</section>
+</main>
+<footer class="site">
+  <div class="wrap">
+    <div class="cols">
+      <div>
+        <a class="logo" href="index.html" aria-label="LincsDirectory home" style="color:#fff"><svg viewBox="0 0 64 64" aria-hidden="true" focusable="false"><rect width="64" height="64" rx="16" fill="#0F2A24"/><path d="M32 10c-9.9 0-18 7.9-18 17.7C14 41 32 56 32 56s18-15 18-28.3C50 17.9 41.9 10 32 10z" fill="#D4F25A"/><circle cx="32" cy="27" r="6.5" fill="#0F2A24"/><path d="M38 33l6 6" stroke="#0F2A24" stroke-width="4" stroke-linecap="round"/></svg><span class="wm" style="color:#fff"><b style="color:#D4F25A">Lincs</b><span style="color:#fff">Directory</span></span></a>
+        <p style="margin-top:.8rem;max-width:30rem">The Lincolnshire business directory. Free listings for every local business, built from public records and kept up to date by the businesses themselves.</p>
+        <p>Phone <a href="tel:+441522424963">01522 424963</a> (Mon–Fri, 9am–5pm). Or <a href="claim.html">send us a message</a>.</p>
+      </div>
+      <div>
+        <h4>Directory</h4>
+        <ul>
+          <li><a href="search.html">Search all listings</a></li>
+          <li><a href="claim.html">Claim or update your listing</a></li>
+          <li><a href="claim.html#remove">Remove a listing</a></li>
+          <li><a href="index.html#premium">Featured listing, £4.99</a></li>
+          <li><a href="advertise.html">Advertise with us</a></li>
+        </ul>
+      </div>
+      <div>
+        <h4>TAG Sleaford</h4>
+        <ul>
+          <li><a href="about.html">About LincsDirectory</a></li>
+          <li><a href="https://centre.tagsleaford.com" rel="noopener">Kesteven Business Centre</a></li>
+          <li><a href="https://aide.tagsleaford.com" rel="noopener">Aide business reports</a></li>
+          <li><a href="privacy.html">Privacy notice</a></li>
+          <li><a href="terms.html">Terms</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="legal">
+      <p>&copy; <span id="yr">2026</span> TAG Sleaford Ltd, trading as LincsDirectory. Registered in England and Wales, company number 12870323. Registered office: Building 15 Gateway 1000, Whittle Way, Arlington Business Park, Stevenage, Hertfordshire, SG1 2FP. Trading from Kesteven Business Centre, Kesteven Street, Sleaford NG34 7DT.</p>
+      <p>Listings are built from public data: Food Standards Agency Food Hygiene Rating Scheme data (Crown copyright, <a href="https://www.nationalarchives.gov.uk/doc/open-government-licence/version/3/" rel="noopener">Open Government Licence v3.0</a>) and <a href="https://www.openstreetmap.org/copyright" rel="noopener">OpenStreetMap</a> contributors (ODbL). Unclaimed listings may be out of date; businesses can <a href="claim.html">correct or remove</a> theirs at any time. Advertisements and Featured listings are labelled.</p>
+    </div>
+  </div>
+</footer>
+<script src="assets/app.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.js" crossorigin=""></script>
+<script src="assets/directory.js"></script>
+<script>
+(function () {
+  var $ = function (id) { return document.getElementById(id); };
+  var PAGE = 20, MAX_PINS = 300;
+  var state = { q: "", town: "", cat: "", id: "", user: null, shown: PAGE, active: null };
+  var IDX, LIVE, ROWS = [], RESULTS = [];
+  var params = new URLSearchParams(location.search);
+  state.q = params.get("q") || ""; state.town = params.get("town") || ""; state.cat = params.get("cat") || ""; state.id = params.get("id") || "";
+  $("q").value = state.q;
+
+  var map = L.map("map", { scrollWheelZoom: false }).setView([53.1, -0.2], 9);
+  L.tileLayer("https://tile.openstreetmap.org/{z}/{x}/{y}.png", { maxZoom: 18, attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors' }).addTo(map);
+  var layer = L.layerGroup().addTo(map), markers = {}, userMarker = null;
+  function pin(l, on) { return L.divIcon({ className: "", html: '<div class="pin' + (on ? " on" : "") + (l.tier === "premium" ? " prem" : "") + '"></div>', iconSize: [24, 24], iconAnchor: [12, 24] }); }
+
+  function setUrl() {
+    var p = new URLSearchParams();
+    if (state.q) p.set("q", state.q); if (state.town) p.set("town", state.town); if (state.cat) p.set("cat", state.cat);
+    var s = p.toString(); history.replaceState(null, "", location.pathname + (s ? "?" + s : ""));
+  }
+  function townName(id) { return IDX.towns[id] ? IDX.towns[id].name : "Lincolnshire"; }
+
+  function renderFilters() {
+    var sel = $("townSel");
+    while (sel.options.length > 1) sel.remove(1);
+    Object.keys(IDX.towns).map(function (id) { return { id: id, name: IDX.towns[id].name, n: LIVE.towns[id] || 0 }; })
+      .filter(function (t) { return t.n > 0; }).sort(function (a, b) { return a.name.localeCompare(b.name); })
+      .forEach(function (t) { var o = document.createElement("option"); o.value = t.id; o.textContent = t.name + " (" + LD.fmt(t.n) + ")"; sel.appendChild(o); });
+    sel.value = state.town;
+    var row = $("catRow");
+    Array.prototype.slice.call(row.querySelectorAll(".chip")).forEach(function (n) { n.remove(); });
+    var scopedCounts = {};
+    ROWS.forEach(function (r) { scopedCounts[r.c] = (scopedCounts[r.c] || 0) + 1; });
+    var all = LD.el("button", { type: "button", class: "chip", "aria-pressed": state.cat ? "false" : "true", text: "Everything" });
+    all.addEventListener("click", function () { state.cat = ""; run(true); });
+    row.appendChild(all);
+    Object.keys(IDX.cats).map(function (c) { return { id: c, name: IDX.cats[c], n: scopedCounts[c] || 0 }; })
+      .filter(function (c) { return c.n > 0 || c.id === state.cat; }).sort(function (a, b) { return b.n - a.n; })
+      .forEach(function (c) {
+        var b = LD.el("button", { type: "button", class: "chip" + (c.n ? "" : " empty"), "aria-pressed": state.cat === c.id ? "true" : "false" });
+        b.appendChild(document.createTextNode(c.name)); b.appendChild(LD.el("small", { text: LD.fmt(c.n) }));
+        b.addEventListener("click", function () { state.cat = state.cat === c.id ? "" : c.id; run(true); });
+        row.appendChild(b);
+      });
+  }
+
+  function card(l, i) {
+    var prem = l.tier === "premium";
+    var c = LD.el("article", { class: "card" + (prem ? " featured" : "") + (state.active === l.id ? " active" : ""), "data-id": l.id, tabindex: "0" });
+    c.appendChild(LD.el("span", { class: "idx", text: String(i + 1) }));
+    if (prem && l.img) c.appendChild(LD.el("div", { class: "photo" }, [LD.el("img", { src: l.img, alt: l.n, loading: "lazy", width: "480", height: "270" })]));
+    var top = LD.el("div", { class: "top" }, [LD.el("h3", { text: l.n })]);
+    if (prem) top.appendChild(LD.el("span", { class: "badge featured", text: "Featured" }));
+    c.appendChild(top);
+    c.appendChild(LD.el("p", { class: "meta", text: (IDX.cats[l.c] || "") + " · " + townName(l.t) + (l._d != null ? " · " + l._d.toFixed(1) + " miles" : "") }));
+    c.appendChild(LD.el("p", { text: l.a + (l.p ? ", " + l.p : "") }));
+    if (prem) {
+      if (l.desc) c.appendChild(LD.el("p", { text: l.desc }));
+      if (l.hrs) c.appendChild(LD.el("p", { class: "small muted", text: "Open: " + l.hrs }));
+      if (l.ph) { var pp = LD.el("p", { text: "Phone: " }); pp.appendChild(LD.el("a", { href: "tel:+44" + l.ph.replace(/\s+/g, "").replace(/^0/, ""), text: l.ph })); c.appendChild(pp); }
+    }
+    var acts = LD.el("div", { class: "actions" });
+    if (prem && l.w) acts.appendChild(LD.el("a", { class: "btn small", href: l.w, target: "_blank", rel: "noopener", text: "Visit website" }));
+    acts.appendChild(LD.el("a", { class: "btn small ghost", href: "https://www.google.com/maps/dir/?api=1&destination=" + l.la + "," + l.lo, target: "_blank", rel: "noopener", text: "Directions" }));
+    if (!prem) acts.appendChild(LD.el("a", { class: "btn small ghost", href: LD.claimUrl(l), text: "Claim this listing" }));
+    c.appendChild(acts);
+    c.appendChild(LD.el("p", { class: "src", text: prem ? "Details supplied by the business." : LD.sourceNote(l) + " Not yet claimed by the owner, so details may be out of date." }));
+    c.addEventListener("click", function (e) { if (e.target.tagName !== "A") setActive(l.id, true); });
+    c.addEventListener("keydown", function (e) { if (e.key === "Enter" && e.target === c) setActive(l.id, true); });
+    return c;
+  }
+
+  function renderList() {
+    var list = $("list"), status = $("status"), more = $("more");
+    list.textContent = ""; more.textContent = "";
+    var n = RESULTS.length, what = state.q ? '"' + state.q + '"' : (state.cat ? IDX.cats[state.cat].toLowerCase() : "all listings");
+    var where = state.town ? "in " + townName(state.town) : "across Lincolnshire";
+    status.textContent = "";
+    status.appendChild(LD.el("strong", { text: LD.fmt(n) + (n === 1 ? " result" : " results") }));
+    status.appendChild(document.createTextNode(" for " + what + " " + where + (state.user ? ", nearest first" : "") + ". Featured listings appear first."));
+    document.title = (state.q ? state.q + " " + where : (state.cat ? IDX.cats[state.cat] + " " + where : "Search Lincolnshire businesses")) + " | LincsDirectory";
+    $("pageTitle").textContent = state.q ? "Results for " + state.q + " " + where : (state.cat ? IDX.cats[state.cat] + " " + where : (state.town ? "Businesses in " + townName(state.town) : "Search Lincolnshire businesses"));
+    if (!n) {
+      var box = LD.el("div", { class: "empty-state" }, [
+        LD.el("h3", { text: "Nothing listed for " + what + " " + where + " yet" }),
+        LD.el("p", { class: "muted", text: "New businesses go live every day. If this is your trade, be the first one customers see here, free." }),
+        LD.el("a", { class: "btn small", href: "claim.html?note=" + encodeURIComponent("Add my business: " + what + " " + where), text: "Add my business free" })
+      ]);
+      if (state.town) { var o = LD.el("p", { style: "margin-top:.9rem" }); var a = LD.el("a", { href: "#", text: "Search all of Lincolnshire instead" }); a.addEventListener("click", function (e) { e.preventDefault(); state.town = ""; $("townSel").value = ""; load(); }); o.appendChild(a); box.appendChild(o); }
+      list.appendChild(box); return;
+    }
+    RESULTS.slice(0, state.shown).forEach(function (l, i) { list.appendChild(card(l, i)); });
+    if (n > state.shown) {
+      var b = LD.el("button", { type: "button", class: "btn ghost", text: "Show " + Math.min(PAGE, n - state.shown) + " more (" + LD.fmt(n - state.shown) + " left)" });
+      b.addEventListener("click", function () { state.shown += PAGE; renderList(); renderMap(false); });
+      more.appendChild(b);
+      more.appendChild(LD.el("p", { class: "small muted", style: "margin-top:.6rem", text: "Showing 1–" + state.shown + " of " + LD.fmt(n) + "." }));
+    }
+  }
+
+  function renderMap(refit) {
+    layer.clearLayers(); markers = {};
+    var subset = RESULTS.slice(0, Math.max(state.shown, Math.min(RESULTS.length, MAX_PINS)));
+    if (subset.length > MAX_PINS) subset = subset.slice(0, MAX_PINS);
+    var seen = {};
+    subset.forEach(function (l) {
+      var key = l.la + "," + l.lo; var k = (seen[key] = (seen[key] || 0) + 1);
+      var m = L.marker([l.la + (k - 1) * 0.00012, l.lo], { icon: pin(l, state.active === l.id), title: l.n, keyboard: true });
+      m.bindPopup("<strong>" + l.n.replace(/</g, "&lt;") + "</strong><br>" + l.a.replace(/</g, "&lt;") + (l.p ? ", " + l.p : ""));
+      m.on("click", function () { setActive(l.id, false); });
+      m.addTo(layer); markers[l.id] = m;
+    });
+    if (!refit) return;
+    var pts = subset.map(function (l) { return [l.la, l.lo]; });
+    if (state.user) pts.push([state.user.lat, state.user.lng]);
+    if (pts.length > 1) map.fitBounds(pts, { padding: [30, 30], maxZoom: 15 });
+    else if (pts.length === 1) map.setView(pts[0], 15);
+    else if (state.town && IDX.towns[state.town]) map.setView([IDX.towns[state.town].lat, IDX.towns[state.town].lon], 13);
+    else map.setView([53.1, -0.2], 9);
+  }
+
+  function setActive(id, pan) {
+    state.active = id;
+    Object.keys(markers).forEach(function (k) { var l = RESULTS.filter(function (r) { return r.id === k; })[0]; if (l) markers[k].setIcon(pin(l, k === id)); });
+    Array.prototype.slice.call(document.querySelectorAll(".card")).forEach(function (n) { n.classList.toggle("active", n.getAttribute("data-id") === id); });
+    if (markers[id]) { if (pan) map.setView(markers[id].getLatLng(), 16); markers[id].openPopup(); }
+    if (!pan) { var c = document.querySelector('.card[data-id="' + id + '"]'); if (c && c.scrollIntoView) c.scrollIntoView({ block: "nearest", behavior: "smooth" }); }
+  }
+
+  function run(resetShown) {
+    if (resetShown) state.shown = PAGE;
+    var pq = LD.parseQuery(state.q, IDX.towns);
+    if (pq.town && pq.town !== state.town) { state.town = pq.town; $("townSel").value = pq.town; load(); return; }
+    RESULTS = LD.search(ROWS, { tokens: pq.tokens, cat: state.cat, catNames: IDX.cats, user: state.user });
+    renderFilters(); renderList(); renderMap(true); setUrl();
+    if (state.id) { var hit = RESULTS.filter(function (r) { return r.id === state.id; })[0]; if (hit) { var idx = RESULTS.indexOf(hit); if (idx >= state.shown) { state.shown = idx + 1; renderList(); renderMap(false); } setTimeout(function () { setActive(hit.id, true); }, 200); } state.id = ""; }
+  }
+  function load() {
+    $("status").textContent = "Loading listings…";
+    LD.listings(state.town || null).then(function (rows) { ROWS = rows; run(true); })
+      .catch(function () { $("status").textContent = "Sorry, the listings could not be loaded. Please refresh the page."; });
+  }
+
+  $("searchForm").addEventListener("submit", function (e) { e.preventDefault(); state.q = $("q").value.trim(); state.cat = ""; run(true); });
+  $("townSel").addEventListener("change", function () { state.town = this.value; state.user = null; if (userMarker) { map.removeLayer(userMarker); userMarker = null; } load(); });
+  $("nearBtn").addEventListener("click", function () {
+    if (!navigator.geolocation) { $("status").textContent = "Your browser can't share its location. Choose a town instead."; return; }
+    $("status").textContent = "Finding your location…";
+    navigator.geolocation.getCurrentPosition(function (pos) {
+      state.user = { lat: pos.coords.latitude, lng: pos.coords.longitude };
+      if (userMarker) map.removeLayer(userMarker);
+      userMarker = L.marker([state.user.lat, state.user.lng], { icon: L.divIcon({ className: "", html: '<div class="me"></div>', iconSize: [16, 16], iconAnchor: [8, 8] }), title: "You are here" }).addTo(map);
+      if (state.town) { state.town = ""; $("townSel").value = ""; load(); } else run(true);
+    }, function () { $("status").textContent = "We couldn't get your location. Allow location access, or choose a town instead."; }, { enableHighAccuracy: false, timeout: 10000, maximumAge: 300000 });
+  });
+
+  LD.index().then(function (idx) {
+    IDX = idx; LIVE = LD.liveCounts(idx);
+    if (state.id && !state.town) { // deep link to one listing: find its district file
+      var pq0 = LD.parseQuery(state.q, IDX.towns); if (pq0.town) state.town = pq0.town;
+    }
+    var pq = LD.parseQuery(state.q, IDX.towns); if (pq.town) state.town = pq.town;
+    load();
+  }).catch(function () { $("status").textContent = "Sorry, the directory index could not be loaded."; });
+})();
+</script>
+</body>
+</html>

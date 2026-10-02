@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://lincsdirectory.co.uk/sitemap.xml
