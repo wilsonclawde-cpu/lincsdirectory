@@ -341,7 +341,8 @@
     var hits = jobHits();
     if (hits.length && hits[0].score >= 0.7 && RESULTS.length < 3 && !state.cat) {
       // the words didn't match many names, but we know the job: show the businesses in its categories instead
-      RESULTS = LD.search(ROWS, { tokens: [], cats: hits[0].job.c, catNames: IDX.cats, user: state.user });
+      RESULTS = LD.search(ROWS, { tokens: [], cats: [hits[0].job.c[0]], catNames: IDX.cats, user: state.user });
+      if (!RESULTS.length) RESULTS = LD.search(ROWS, { tokens: [], cats: hits[0].job.c, catNames: IDX.cats, user: state.user });
       state.jobCats = hits[0].job.t;
     } else state.jobCats = "";
     renderFilters(); renderList(); renderMap(true); setUrl();
