@@ -61,7 +61,7 @@
       <div class="field">
         <label for="q" class="visually-hidden">What do you need?</label>
         <svg viewBox="0 0 24 24" width="24" height="24" aria-hidden="true" focusable="false"><circle cx="11" cy="11" r="7" fill="none" stroke="currentColor" stroke-width="2.4"/><path d="M16.5 16.5 21 21" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/></svg>
-        <input id="q" name="q" type="search" placeholder="What do you need? e.g. Indian takeaway, barber, MOT…" enterkeyhint="search">
+        <input id="q" name="q" type="search" placeholder="e.g. Indian takeaway, barber, MOT" data-ph-sm="e.g. barber, MOT, curry" enterkeyhint="search">
       </div>
       <button class="btn" type="submit">Search</button>
       <button class="btn light" type="button" id="nearBtn"><svg viewBox="0 0 24 24" width="24" height="24" aria-hidden="true" focusable="false"><path d="M12 21s-6-5.3-6-11a6 6 0 0 1 12 0c0 5.7-6 11-6 11z" fill="none" stroke="currentColor" stroke-width="2.2"/><circle cx="12" cy="10" r="2.2" fill="currentColor"/></svg> Near me</button>
@@ -108,7 +108,7 @@
   <div class="wrap grid c2" style="align-items:center">
     <div>
       <h2>Run one of these businesses?</h2>
-      <p class="lead" style="margin-top:.6rem">Claim your listing free, or go Premium for £4.99 once: your own profile page with photo, website, phone and hours, first in results, and a free Aide business report.</p>
+      <p class="lead" style="margin-top:.6rem">Claim your listing free, or get Promoted for £1.99 a month: your own profile page with photo, website, phone and hours, first in results with the Premium tag, and a free Aide business report when you start. Cancel any time.</p>
     </div>
     <p style="margin:0;display:flex;gap:.6rem;flex-wrap:wrap"><a class="btn" href="claim.html">Claim or update</a><a class="btn ghost" href="suggest.html">Suggest a business</a></p>
   </div>
@@ -138,7 +138,7 @@
         <ul>
           <li><a href="pros.html">Tradespeople &amp; services: get found for the jobs you do</a></li>
           <li><a href="claim.html">Claim or update your listing</a></li>
-          <li><a href="index.html#premium">Premium listing, £4.99</a></li>
+          <li><a href="index.html#premium">Promoted listing, £1.99 a month</a></li>
           <li><a href="claim.html#remove">Remove a listing</a></li>
           <li><a href="suggest.html">Suggest a business</a></li>
           <li><a href="advertise.html">Advertise with us</a></li>
@@ -179,11 +179,16 @@
 (function () {
   var $ = function (id) { return document.getElementById(id); };
   var PAGE = 20, MAX_PINS = 300;
-  var state = { q: "", town: "", cat: "", id: "", user: null, shown: PAGE, active: null };
+  var state = { q: "", town: "", cat: "", id: "", user: null, shown: PAGE, active: null, mode: "", intent: "", how: "" };
   var IDX, LIVE, ROWS = [], RESULTS = [], RATINGS = {};
   var params = new URLSearchParams(location.search);
   state.q = params.get("q") || ""; state.town = params.get("town") || ""; state.cat = params.get("cat") || ""; state.id = params.get("id") || "";
+  state.mode = ({ help: "help", buy: "buy", fancy: "fancy" })[params.get("mode") || ""] || ""; state.intent = params.get("intent") || "";
   $("q").value = state.q;
+  // parameterised search pages are never indexed (the canonical is the bare search.html; this adds noindex for any crawler that renders JS)
+  if (location.search) { var rb = document.querySelector('meta[name="robots"]'); if (rb) rb.setAttribute("content", "noindex,follow"); }
+  var MODE_WORD = { help: "help with", buy: "where to buy", fancy: "" };
+  if (state.mode === "buy") $("q").setAttribute("placeholder", "I'm looking to buy…"); else if (state.mode === "fancy") $("q").setAttribute("placeholder", "I fancy…"); else if (state.mode === "help") $("q").setAttribute("placeholder", "I need help with…");
 
   var map = L.map("map", { scrollWheelZoom: false }).setView([53.1, -0.2], 9);
   L.tileLayer("https://tile.openstreetmap.org/{z}/{x}/{y}.png", { maxZoom: 18, attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors' }).addTo(map);
@@ -192,7 +197,7 @@
 
   function setUrl() {
     var p = new URLSearchParams();
-    if (state.q) p.set("q", state.q); if (state.town) p.set("town", state.town); if (state.cat) p.set("cat", state.cat);
+    if (state.mode) p.set("mode", state.mode); if (state.q) p.set("q", state.q); if (state.town) p.set("town", state.town); if (state.cat) p.set("cat", state.cat);
     var s = p.toString(); history.replaceState(null, "", location.pathname + (s ? "?" + s : ""));
   }
   function townName(id) { return IDX.towns[id] ? IDX.towns[id].name : "Lincolnshire"; }
@@ -256,10 +261,17 @@
     var n = RESULTS.length, what = state.q ? '"' + state.q + '"' : (state.cat ? IDX.cats[state.cat].toLowerCase() : "all listings");
     var where = state.town ? "in " + townName(state.town) : "across Lincolnshire";
     status.textContent = "";
-    status.appendChild(LD.el("strong", { text: LD.fmt(n) + (n === 1 ? " result" : " results") }));
-    status.appendChild(document.createTextNode(" for " + what + " " + where + (state.user ? ", nearest first" : "") + (state.jobCats ? " (businesses that do “" + state.jobCats + "”)" : "") + ". Premium listings appear first."));
-    document.title = (state.q ? state.q + " " + where : (state.cat ? IDX.cats[state.cat] + " " + where : "Search Lincolnshire businesses")) + " | LincsDirectory";
-    $("pageTitle").textContent = state.q ? "Results for " + state.q + " " + where : (state.cat ? IDX.cats[state.cat] + " " + where : (state.town ? "Businesses in " + townName(state.town) : "Search Lincolnshire businesses"));
+    if (state.how) {   // v5 buy / fancy: say plainly what the list is (keyword matches, or the whole category when the words matched nothing)
+      status.appendChild(LD.el("strong", { text: state.how.lead }));
+      status.appendChild(document.createTextNode(" " + state.how.rest + (state.user ? " Nearest first." : "") + " Premium listings appear first."));
+    } else {
+      status.appendChild(LD.el("strong", { text: LD.fmt(n) + (n === 1 ? " result" : " results") }));
+      status.appendChild(document.createTextNode(" for " + what + " " + where + (state.user ? ", nearest first" : "") + (state.jobCats ? " (businesses that do “" + state.jobCats + "”)" : "") + ". Premium listings appear first."));
+    }
+    var h1 = state.q ? (state.mode === "buy" ? "Where to buy " + state.q + " " + where : state.mode === "fancy" ? "Fancy " + state.q + "? " + where.replace(/^in /, "In ").replace(/^across/, "Across") : state.mode === "help" ? "Help with " + state.q + " " + where : "Results for " + state.q + " " + where)
+           : (state.cat ? IDX.cats[state.cat] + " " + where : (state.town ? "Businesses in " + townName(state.town) : "Search Lincolnshire businesses"));
+    document.title = (h1.length > 44 ? h1.slice(0, 43) + "…" : h1) + " | LincsDirectory";
+    $("pageTitle").textContent = h1;
     if (!n) {
       var box = LD.el("div", { class: "empty-state" }, [
         LD.el("h3", { text: "Nothing listed for " + what + " " + where + " yet" }),
@@ -312,10 +324,27 @@
 
   /* intent: show matching job pages above the results ("wash my car" -> Wash my car), and widen the search to the job's categories
      when the plain text search finds little. */
-  var JOBS = null;
+  var JOBS = null, SET = null, CATPAGE = {"rest": "restaurants", "cafe": "cafes-coffee-shops", "take": "takeaways", "pub": "pubs-bars", "hotel": "hotels-bed-and-breakfast", "fun": "things-to-do", "super": "supermarkets-convenience-stores", "food": "food-drink-shops", "shop": "shops", "home": "home-garden-diy", "hair": "hair-beauty", "health": "health-pharmacy", "motor": "garages-motoring", "trade": "trades", "prof": "professional-financial-services", "estate": "estate-agents", "pets": "pets-vets", "leisure": "sport-leisure", "venue": "halls-venues", "cater": "caterers", "serv": "services", "office": "offices-workspace", "plumb": "plumbers-heating", "elec": "electricians", "build": "builders-handyman-trades", "garden": "gardeners-landscapers", "garage": "mot-servicing-tyres", "carwash": "car-washes-valeting", "clean": "cleaners", "remov": "removals-storage", "appl": "appliance-gadget-repair", "lock": "locksmiths", "petserv": "pet-services", "tutor": "tutors-lessons", "photo": "photographers-events"};
+  function catHref(c) { return CATPAGE[c] ? CATPAGE[c] + "-lincolnshire.html" : "search.html?cat=" + c; }
   function jobHits() {
-    var box = $("jobHits"); box.hidden = true; box.textContent = "";
-    if (!state.q || !JOBS || !window.LDI) return [];
+    var box = $("jobHits"); box.hidden = true; box.textContent = ""; box.className = "jobhits" + (state.mode && state.mode !== "help" ? " " + state.mode : "");
+    if (!state.q || !window.LDI) return [];
+    if (state.mode === "buy" || state.mode === "fancy") {
+      // v5: "I'm looking to buy…" / "I fancy…": show the matched intent (category + keywords) above the results, with links to the category pages
+      if (!SET) return [];
+      var ih = LDI.match(state.q, SET, 3);
+      if (state.intent) { var pin = SET.filter(function (x) { return x.s === state.intent; })[0]; if (pin) { ih = ih.filter(function (x) { return x.job.s !== state.intent; }); ih.unshift({ job: pin, score: 1 }); } }
+      if (!ih.length) return [];
+      box.appendChild(LD.el("div", { class: "jh-head" }, [LD.el("span", { class: "eyebrow", text: (ih[0].score >= 0.75 ? (state.mode === "buy" ? "Looks like you're after" : "Looks like you fancy") : "Could be") })]));
+      var top = ih[0].job;
+      box.appendChild(LD.el("a", { class: "jh", href: catHref(top.c[0]) }, [LD.el("strong", { text: top.t }), LD.el("span", { text: top.c.map(function (c) { return IDX.cats[c] || c; }).join(" · ") + (state.town ? " in " + townName(state.town) : " across Lincolnshire") + " ›" })]));
+      var cats = LD.el("div", { class: "jh-cats" });
+      ih.slice(1).forEach(function (x) { cats.appendChild(LD.el("a", { href: "search.html?mode=" + state.mode + "&q=" + encodeURIComponent(state.q) + "&intent=" + encodeURIComponent(x.job.s) + (state.town ? "&town=" + state.town : ""), text: "Or: " + x.job.t })); });
+      top.c.forEach(function (c) { cats.appendChild(LD.el("a", { href: state.town ? "search.html?town=" + state.town + "&cat=" + c : catHref(c), text: "All " + (IDX.cats[c] || c).toLowerCase() + (state.town ? " in " + townName(state.town) : "") })); });
+      box.appendChild(cats); box.hidden = false;
+      return ih;
+    }
+    if (!JOBS) return [];
     var hits = LDI.match(state.q, JOBS, 3);
     if (!hits.length) return [];
     var h = LD.el("div", { class: "jh-head" }, [LD.el("span", { class: "eyebrow", text: hits[0].score >= 0.8 ? "Looks like you need" : "Related jobs" })]);
@@ -339,10 +368,24 @@
     }
     RESULTS = LD.search(ROWS, { tokens: pq.tokens, cat: state.cat, catNames: IDX.cats, user: state.user });
     var hits = jobHits();
-    if (hits.length && hits[0].score >= 0.7 && RESULTS.length < 3 && !state.cat) {
+    state.how = "";
+    if ((state.mode === "buy" || state.mode === "fancy") && hits.length && !state.cat) {
+      // v5: tight list first = listings in the intent's categories whose name (or Premium description) carries one of its keywords, or
+      // whose name matches the typed words; if that gives fewer than 3, widen to everything in those categories and say so.
+      var it = hits[0].job, where = state.town ? "in " + townName(state.town) : "across Lincolnshire", kws = it.k || [];
+      var inCats = LD.search(ROWS, { tokens: [], cats: it.c, catNames: IDX.cats, user: state.user });
+      var words = pq.tokens.filter(function (t) { return t.length >= 3 && !LD.SYN[t]; });   // the typed words themselves (not category synonyms)
+      var tight = inCats.filter(function (l) { var n = (l.n + " " + (l.desc || "")).toLowerCase(); return kws.some(function (k) { return n.indexOf(k) > -1; }) || words.some(function (t) { return n.indexOf(t) > -1; }); });
+      var lower = it.t.replace(/^[A-Z]/, function (c) { return c.toLowerCase(); }), catsTxt = it.c.map(function (c) { return (IDX.cats[c] || c).toLowerCase(); }).join(" and ");
+      var note = state.mode === "buy" ? "Listings come from public records, so a shop may stock what you want without saying so in its name." : "Listings come from public records and menus aren't listed, so a place may do what you fancy without saying so in its name.";
+      if (tight.length >= 3 || (tight.length && tight.length === inCats.length)) { RESULTS = LD.sortResults(tight); state.how = { lead: "We list " + LD.fmt(RESULTS.length) + " " + lower + " " + where + "." , rest: "Here they are, matched on the business name or type." + (RESULTS.length < inCats.length ? " Or see all " + LD.fmt(inCats.length) + " under " + catsTxt + " " + where + " with the links above." : "") }; }
+      else if (inCats.length) { var tid = {}; tight.forEach(function (l) { tid[l.id] = 1; }); RESULTS = LD.sortResults(tight.slice()).concat(LD.sortResults(inCats.filter(function (l) { return !tid[l.id]; }))); state.how = { lead: (tight.length ? "Only " + tight.length + " of the listings " + where + " " + (tight.length === 1 ? "matches" : "match") + " “" + lower + "” by name (shown first)" : "We can't see any " + lower + " by name " + where + " yet") + ", so here " + (RESULTS.length === 1 ? "is the 1 listing" : "are all " + LD.fmt(RESULTS.length) + " listings") + " under " + catsTxt + " there.", rest: note }; }
+      else { RESULTS = []; state.how = { lead: "Nothing listed yet under " + catsTxt + " " + where + ".", rest: "New listings go live every day. Try another town, or suggest a business." }; }
+      state.jobCats = "";
+    } else if (hits.length && hits[0].score >= 0.7 && RESULTS.length < 3 && !state.cat && state.mode !== "buy" && state.mode !== "fancy") {
       // the words didn't match many names, but we know the job: show the businesses in its categories instead
       RESULTS = LD.search(ROWS, { tokens: [], cats: [hits[0].job.c[0]], catNames: IDX.cats, user: state.user });
-      if (!RESULTS.length) RESULTS = LD.search(ROWS, { tokens: [], cats: hits[0].job.c, catNames: IDX.cats, user: state.user });
+      if (RESULTS.length < 3) RESULTS = LD.search(ROWS, { tokens: [], cats: hits[0].job.c, catNames: IDX.cats, user: state.user });
       state.jobCats = hits[0].job.t;
     } else state.jobCats = "";
     renderFilters(); renderList(); renderMap(true); setUrl();
@@ -354,7 +397,7 @@
       .catch(function () { $("status").textContent = "Sorry, the listings could not be loaded. Please refresh the page."; });
   }
 
-  $("searchForm").addEventListener("submit", function (e) { e.preventDefault(); state.q = $("q").value.trim(); state.cat = ""; run(true); });
+  $("searchForm").addEventListener("submit", function (e) { e.preventDefault(); state.q = $("q").value.trim(); state.cat = ""; state.intent = ""; run(true); });
   $("townSel").addEventListener("change", function () { state.town = this.value; state.user = null; if (userMarker) { map.removeLayer(userMarker); userMarker = null; } load(); });
   function nearMe() {
     if (!navigator.geolocation) { $("status").textContent = "Your browser can't share its location. Choose a town instead."; return; }
@@ -368,8 +411,9 @@
   }
   $("nearBtn").addEventListener("click", nearMe);
 
-  Promise.all([LD.index(), LD.ratings(), (window.LDI ? LDI.load().catch(function () { return null; }) : Promise.resolve(null))]).then(function (res) {
-    var idx = res[0]; RATINGS = res[1] || {}; JOBS = res[2];
+  Promise.all([LD.index(), LD.ratings(), (window.LDI ? LDI.load().catch(function () { return null; }) : Promise.resolve(null)),
+               (window.LDI && (state.mode === "buy" || state.mode === "fancy") ? LDI.loadSet(state.mode).catch(function () { return null; }) : Promise.resolve(null))]).then(function (res) {
+    var idx = res[0]; RATINGS = res[1] || {}; JOBS = res[2]; SET = res[3];
     IDX = idx; LIVE = LD.liveCounts(idx);
     var pq = LD.parseQuery(state.q, IDX.towns); if (pq.town) state.town = pq.town;
     load();
