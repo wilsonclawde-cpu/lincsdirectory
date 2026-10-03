@@ -15,6 +15,13 @@
     window.addEventListener("scroll", onScroll, { passive: true }); onScroll();
   }
   var y = document.getElementById("yr"); if (y) y.textContent = new Date().getFullYear();
+  /* v5: placeholders that would be cut off on a narrow screen carry a shorter version in data-ph-sm; swap at <= 600px (and back). */
+  var phs = document.querySelectorAll("[data-ph-sm]");
+  if (phs.length) {
+    var mq = window.matchMedia("(max-width: 600px)");
+    var swap = function () { phs.forEach(function (el) { if (!el.getAttribute("data-ph-lg")) el.setAttribute("data-ph-lg", el.getAttribute("placeholder") || ""); el.setAttribute("placeholder", mq.matches ? el.getAttribute("data-ph-sm") : el.getAttribute("data-ph-lg")); }); };
+    swap(); if (mq.addEventListener) mq.addEventListener("change", swap); else if (mq.addListener) mq.addListener(swap);
+  }
   var items = document.querySelectorAll(".reveal");
   if (items.length && "IntersectionObserver" in window && !window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
     var io = new IntersectionObserver(function (es) { es.forEach(function (e) { if (e.isIntersecting) { e.target.classList.add("in"); io.unobserve(e.target); } }); }, { rootMargin: "0px 0px -8% 0px" });

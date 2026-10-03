@@ -577,3 +577,88 @@ details.tickgroup summary small{color:var(--muted);font-weight:600}
 .tile .ic.ic-shop,.tile .ic.ic-food{background:#E3F0FF;color:#1D3B53}
 .tile>.badge,.tile>.ic{align-self:flex-start}
 @media (max-width:480px){form.search .btn{width:100%}}
+
+/* ---------- v5 (2026-10-03): cut-off text fixes, sentence-starter cards, Promoted subscribe ---------- */
+/* Cut-off text, root causes found with build/qa_browser.py (fit check): (1) the Get-local-help textarea was rows=2 / min-height 4.5rem
+   with a three-line placeholder, so the third line was clipped; (2) long single-line placeholders (hero search, search page, jobs page,
+   pros/suggest address) were cut mid-word; (3) on help/job/pros/suggest/claim at 600-900px the page is two columns AND the form's .two
+   row split again, leaving 139px inputs where "Choose a town…" and "www.example.co.uk" were clipped; (4) the When? radio pills wrapped
+   their label under the radio. Fixes: taller textarea + shorter placeholders (+ a short placeholder on small screens via data-ph-sm,
+   see assets/app.js), placeholders that still overflow are elided not cut, single-column .two rows below 900px, nowrap pills, and
+   every control at >= 1rem (17px) so iOS doesn't zoom on focus. */
+form.helpform textarea{min-height:6.2rem}
+input::placeholder,textarea::placeholder{text-overflow:ellipsis;overflow:hidden}
+@media (max-width:900px){form.enquiry .two{grid-template-columns:1fr}}
+.who label{white-space:nowrap}
+.mini input,.mini select,.mini textarea,.near-ui select,.chiprow select{font-size:1rem}
+form.enquiry select,.near-ui select{padding-right:2.2rem;background:#fff url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M6 9l6 6 6-6' fill='none' stroke='%230F2A24' stroke-width='2.5' stroke-linecap='round'/%3E%3C/svg%3E") no-repeat right .8rem center/14px;-webkit-appearance:none;appearance:none;text-overflow:ellipsis;white-space:nowrap;overflow:hidden}
+form.enquiry input,form.enquiry textarea{line-height:1.4}
+form.enquiry .btn,form.helpform .btn,.btn.pay{white-space:normal;text-align:center}
+@supports (field-sizing:content){form.helpform textarea{field-sizing:content;min-height:6.2rem}}
+
+/* sentence-starter cards: "I need help with…", "I'm looking to buy…", "I fancy…" (home page, assets/home.js, data/intents.json) */
+.asks{margin-top:-3.6rem;position:relative;z-index:3;padding-bottom:.4rem}
+.ask-where{display:flex;align-items:center;gap:.6rem;flex-wrap:wrap;margin:0 0 .8rem;color:#fff;font-weight:700;font-size:.95rem}
+.ask-where label{display:inline-flex;align-items:center;gap:.4rem}
+.ask-where label svg{width:20px;height:20px;color:var(--lime)}
+.ask-where select{flex:1 1 12rem;min-width:0;font:800 1rem "Manrope",sans-serif;padding:.55rem 2.4rem .55rem 1rem;min-height:46px;border:2px solid rgba(255,255,255,.35);border-radius:99px;background:rgba(11,49,41,.85) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M6 9l6 6 6-6' fill='none' stroke='%23D4F25A' stroke-width='2.5' stroke-linecap='round'/%3E%3C/svg%3E") no-repeat right .9rem center/14px;color:#fff;-webkit-appearance:none;appearance:none;max-width:100%;text-overflow:ellipsis;white-space:nowrap;overflow:hidden}
+.ask-where select:focus{outline:none;border-color:var(--lime);box-shadow:0 0 0 4px rgba(212,242,90,.3)}
+@media (max-width:480px){.ask-where select{flex-basis:100%}}
+@media (min-width:481px){.ask-where select{max-width:24rem}}
+@media (max-width:600px){.hero.v5{padding:1.5rem 0 4.4rem}.hero.v5 h1{font-size:2.15rem}.hero.v5 .lead{font-size:1rem;margin-bottom:.6rem}.hero.v5 .hero-stats{margin-top:.6rem;font-size:.85rem;gap:.2rem 1.1rem}.hero.v5 .hero-stats strong{font-size:1.1rem}}
+.ask-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:1rem}
+@media (max-width:900px){.ask-grid{grid-template-columns:minmax(0,1fr)}}
+.ask,.ask-chips,.ask-row,form.enquiry{min-width:0}
+@media (max-width:560px){.grid.c4,.grid.c3,.grid.c2{grid-template-columns:minmax(0,1fr)}}
+.ask{background:var(--paper);border:1px solid var(--line);border-radius:var(--r-lg);padding:1.2rem 1.2rem 1.1rem;box-shadow:var(--shadow);position:relative;display:flex;flex-direction:column;gap:.7rem;margin:0;transition:transform .25s var(--ease),box-shadow .25s}
+.ask:focus-within{box-shadow:var(--shadow-lg);transform:translateY(-3px)}
+.ask.help{border-top:5px solid var(--coral)}.ask.buy{border-top:5px solid #1D3B53}.ask.fancy{border-top:5px solid var(--lime-deep)}
+.ask-lab{display:flex;align-items:center;gap:.6rem;font-family:"Fraunces","Fraunces-fb","Georgia",serif;font-weight:800;font-size:clamp(1.35rem,1.7vw,1.6rem);letter-spacing:-.02em;line-height:1.1;color:var(--ink);cursor:text}
+.ask-lab em{font-style:italic;font-weight:500;color:var(--moss);font-variation-settings:"opsz" 144,"SOFT" 100}
+.ask-lab .ic{width:40px;height:40px;border-radius:12px;display:grid;place-items:center;flex:none}
+.ask-lab .ic svg{width:22px;height:22px}
+.ask.help .ask-lab .ic{background:var(--coral-soft);color:var(--coral-deep)}
+.ask.buy .ask-lab .ic{background:#E3F0FF;color:#1D3B53}
+.ask.fancy .ask-lab .ic{background:var(--lime-soft);color:var(--green)}
+.ask-row{display:flex;gap:.5rem;position:relative}
+.ask-row input[type=search]{flex:1 1 auto;min-width:0;width:100%;font:600 1.08rem "Manrope",sans-serif;padding:.8rem 1rem;min-height:52px;border:2px solid var(--line);border-radius:14px;background:var(--cream);color:var(--ink);-webkit-appearance:none;appearance:none}
+.ask-row input::placeholder{color:#6f7c76;font-weight:500;font-style:italic}
+.ask-row input:focus{outline:none;border-color:var(--green);background:#fff;box-shadow:0 0 0 4px rgba(22,72,59,.14)}
+.ask-row .go{flex:none;width:52px;height:52px;border-radius:14px;border:2px solid var(--ink);background:var(--ink);color:var(--lime);display:grid;place-items:center;cursor:pointer;padding:0;transition:background .15s,transform .15s}
+.ask-row .go:hover{background:var(--green);transform:translateY(-1px)}
+.ask-row .go svg{width:24px;height:24px}
+.ask.help .ask-row .go{background:var(--coral);border-color:var(--coral);color:var(--ink)}.ask.help .ask-row .go:hover{background:var(--coral-deep);color:#fff}
+.ask .suggest{top:auto;position:relative;margin-top:-.2rem;box-shadow:var(--shadow-sm)}
+.ask .suggest:not([hidden]){display:block}
+.ask-chips{display:flex;gap:.4rem;overflow-x:auto;scrollbar-width:none;-webkit-overflow-scrolling:touch;padding:.1rem 0 .25rem;margin:0 -.2rem;scroll-padding:.2rem}
+.ask-chips::-webkit-scrollbar{display:none}
+.ask-chips a,.ask-chips button{flex:none;font:700 .86rem "Manrope",sans-serif;padding:.45rem .85rem;min-height:38px;border-radius:99px;border:1.5px solid var(--line);background:#fff;color:var(--ink);text-decoration:none;cursor:pointer;white-space:nowrap;display:inline-flex;align-items:center;transition:background .15s,border-color .15s}
+.ask-chips a:hover,.ask-chips button:hover{background:var(--lime-soft);border-color:var(--lime-deep)}
+@media (max-width:900px){.ask-chips{-webkit-mask-image:linear-gradient(to right,#000 88%,transparent);mask-image:linear-gradient(to right,#000 88%,transparent);padding-right:1.5rem}}
+@media (min-width:901px){.ask-chips{flex-wrap:wrap;overflow:visible}}
+.ask-seo{font-size:.8rem;color:var(--muted);margin:0;line-height:1.5}
+.ask-seo a{color:var(--muted)}.ask-seo a:hover{color:var(--ink)}
+.hero.v5{padding-bottom:clamp(4.6rem,8vw,6.5rem)}
+.hero.v5 .hero-grid{align-items:start}
+.hero.v5 .hero-art{max-width:26rem;justify-self:end}
+@media (max-width:900px){.hero.v5 .hero-art{display:none}}
+.intents.doors.v5{margin-top:1.2rem}
+.intents.doors.v5 .intent.door{gap:.5rem}
+.intents.doors.v5 .jobpick a,.intents.doors.v5 .catpick a{min-height:42px;padding:.5rem .7rem}
+/* search page: the "Looks like you want" box per mode */
+.jobhits.buy{background:linear-gradient(135deg,#fff,#E3F0FF);border-color:#9DB9D6}
+.jobhits.fancy{background:linear-gradient(135deg,#fff,var(--lime-soft))}
+.jobhits .jh-cats{display:flex;flex-wrap:wrap;gap:.4rem}
+.jobhits .jh-cats a{font:700 .84rem "Manrope",sans-serif;padding:.4rem .8rem;border-radius:99px;border:1.5px solid var(--line);background:#fff;color:var(--ink);text-decoration:none;min-height:36px;display:inline-flex;align-items:center}
+.jobhits .jh-cats a:hover{border-color:var(--ink)}
+/* Promoted listing: subscribe button. Apple Pay wording is only shown when the device reports it can pay (assets: claim.html script). */
+.intent.door .near-ui{grid-template-columns:1fr}
+.subscribe{display:grid;gap:.5rem;margin:.6rem 0 .2rem}
+.subscribe[hidden]{display:none}
+.btn.pay{background:#000;border-color:#000;color:#fff;font-size:1.05rem;padding:.9rem 1.5rem;min-height:52px;width:100%;justify-content:center}
+.btn.pay:hover{background:#222;border-color:#222;color:#fff}
+.btn.pay svg{width:1.25em;height:1.25em}
+.subscribe .alt{font-size:.9rem;font-weight:700;text-align:center;margin:0}
+.subscribe .tiny{text-align:center;margin:0}
+.price-tag{display:inline-flex;align-items:baseline;gap:.25rem;font-family:"Fraunces",serif;font-weight:800;font-size:1.5rem;color:var(--green)}
+.price-tag small{font:700 .85rem "Manrope",sans-serif;color:var(--muted)}

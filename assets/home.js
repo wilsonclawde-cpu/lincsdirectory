@@ -38,9 +38,9 @@ window.LD_ICONS={"rest": "<svg viewBox=\"0 0 24 24\" width=\"22\" height=\"22\" 
       body.appendChild(acts); fl.appendChild(LD.el("article", { class: "fcard" }, [ph, body]));
     });
     fl.appendChild(LD.el("article", { class: "fcard you" }, [LD.el("div", { class: "ph", text: "Your business here" }),
-      LD.el("div", { class: "body" }, [LD.el("span", { class: "badge", text: "£4.99 one-off" }), LD.el("h3", { text: "Go Premium" }),
+      LD.el("div", { class: "body" }, [LD.el("span", { class: "badge", text: "£1.99 a month" }), LD.el("h3", { text: "Get Promoted" }),
         LD.el("p", { class: "small", text: "Your own profile page with photo, website, phone and hours, and first place in results for your town and category. Plus a free Aide business report." }),
-        LD.el("div", { class: "actions" }, [LD.el("a", { class: "btn small coral", href: "claim.html?plan=premium", text: "Get Premium" })])])]));
+        LD.el("div", { class: "actions" }, [LD.el("a", { class: "btn small coral", href: "claim.html?plan=promoted", text: "Get Promoted" })])])]));
   }).catch(function () { $("townList").textContent = "Listings are loading slowly. Try the search page."; });
 
   /* ---- near me: geolocation on click only; distance computed in the browser; nothing is sent anywhere ---- */
@@ -95,32 +95,50 @@ window.LD_ICONS={"rest": "<svg viewBox=\"0 0 24 24\" width=\"22\" height=\"22\" 
     showNear({ lat: IDX.towns[t].lat, lng: IDX.towns[t].lon }, "Nearest to " + IDX.towns[t].name + " centre", t);
   });
 
-  /* ---- intent suggestions under the hero search: everyday phrase -> job pages (assets/intent.js, data/jobs.json) ---- */
-  var q = $("q"), sug = $("qSuggest"), timer = null, JOBS = null;
-  function hide() { sug.hidden = true; sug.textContent = ""; q.setAttribute("aria-expanded", "false"); }
-  function render(hits, text) {
-    sug.textContent = "";
-    hits.slice(0, 4).forEach(function (h) {
-      var a = LD.el("a", { class: "sg", role: "option", href: h.job.s + ".html" }, [LD.el("strong", { text: h.job.t }), LD.el("span", { text: (h.job.d === "broken" ? "Repair & fix" : "Get it done") + " · " + h.job.g.replace(/^\w/, function (c) { return c.toUpperCase(); }) })]);
-      sug.appendChild(a);
+  /* ---- v5 sentence starters: "I need help with…" (jobs), "I'm looking to buy…" (buy), "I fancy…" (fancy). Each card has an input,
+     live suggestions from assets/intent.js (jobs.json / intents.json), rotating example placeholders (static under reduced motion),
+     and submits to search.html?q=&town=&mode=. The shared town picker is remembered in localStorage (try/catch: private mode). ---- */
+  var townSel = $("askTown"), KEY_T = "ld.town";
+  try { var saved = localStorage.getItem(KEY_T); if (saved && townSel && townSel.querySelector('option[value="' + saved + '"]')) townSel.value = saved; } catch (e) {}
+  if (townSel) townSel.addEventListener("change", function () { try { if (townSel.value) localStorage.setItem(KEY_T, townSel.value); else localStorage.removeItem(KEY_T); } catch (e) {} });
+  var reduce = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  var LABEL = { help: "Repair & fix", buy: "Shops", fancy: "Going out" };
+  Array.prototype.forEach.call(document.querySelectorAll("form.ask"), function (form) {
+    var mode = form.getAttribute("data-mode"), q = form.querySelector("input[type=search]"), sug = form.querySelector(".suggest"), timer = null, SET = null;
+    // rotating placeholders
+    var phs = []; try { phs = JSON.parse(q.getAttribute("data-ph") || "[]"); } catch (e) {}
+    if (phs.length > 1 && !reduce) { var i = 0; setInterval(function () { if (document.activeElement === q && q.value) return; i = (i + 1) % phs.length; q.setAttribute("placeholder", phs[i]); }, 2800); }
+    function hide() { sug.hidden = true; sug.textContent = ""; q.setAttribute("aria-expanded", "false"); }
+    function href(h, text) {
+      var t = townSel ? townSel.value : "";
+      if (mode === "help") return h.job.s + ".html" + (t ? "#town-" + t : "");
+      return "search.html?mode=" + mode + "&q=" + encodeURIComponent(text) + "&intent=" + encodeURIComponent(h.job.s) + (t ? "&town=" + t : "");
+    }
+    function render(hits, text) {
+      sug.textContent = "";
+      hits.slice(0, 4).forEach(function (h) {
+        var sub = mode === "help" ? ((h.job.d === "broken" ? "Repair & fix" : "Get it done") + " · " + h.job.g.replace(/^\w/, function (c) { return c.toUpperCase(); })) : (h.job.g || LABEL[mode]);
+        sug.appendChild(LD.el("a", { class: "sg", role: "option", href: href(h, text) }, [LD.el("strong", { text: h.job.t }), LD.el("span", { text: sub })]));
+      });
+      var t = townSel ? townSel.value : "";
+      sug.appendChild(LD.el("a", { class: "sg all", role: "option", href: "search.html?mode=" + mode + "&q=" + encodeURIComponent(text) + (t ? "&town=" + t : ""), text: "Search listings for “" + text + "”" }));
+      sug.hidden = false; q.setAttribute("aria-expanded", "true");
+    }
+    q.addEventListener("input", function () {
+      clearTimeout(timer); var text = q.value.trim();
+      if (text.length < 3 || !window.LDI) { hide(); return; }
+      timer = setTimeout(function () {
+        LDI.loadSet(mode).then(function (set) { SET = set; var hits = LDI.match(text, set, 4); if (hits.length) render(hits, text); else hide(); }).catch(hide);
+      }, 120);
     });
-    sug.appendChild(LD.el("a", { class: "sg all", role: "option", href: "search.html?q=" + encodeURIComponent(text), text: "Search listings for “" + text + "”" }));
-    sug.hidden = false; q.setAttribute("aria-expanded", "true");
-  }
-  q.addEventListener("input", function () {
-    clearTimeout(timer); var text = q.value.trim();
-    if (text.length < 3 || !window.LDI) { hide(); return; }
-    timer = setTimeout(function () {
-      LDI.load().then(function (jobs) { JOBS = jobs; var hits = LDI.match(text, jobs, 4); if (hits.length) render(hits, text); else hide(); }).catch(hide);
-    }, 120);
-  });
-  q.addEventListener("keydown", function (e) { if (e.key === "Escape") hide(); if (e.key === "ArrowDown" && !sug.hidden) { e.preventDefault(); var f = sug.querySelector("a"); if (f) f.focus(); } });
-  sug.addEventListener("keydown", function (e) { var items = Array.prototype.slice.call(sug.querySelectorAll("a")), i = items.indexOf(document.activeElement); if (e.key === "ArrowDown" && i < items.length - 1) { e.preventDefault(); items[i + 1].focus(); } if (e.key === "ArrowUp") { e.preventDefault(); if (i > 0) items[i - 1].focus(); else q.focus(); } if (e.key === "Escape") { hide(); q.focus(); } });
-  document.addEventListener("click", function (e) { if (!sug.contains(e.target) && e.target !== q) hide(); });
-  $("heroSearch").addEventListener("submit", function (e) {
-    // a clear single match goes straight to the job page; anything else goes to the search page (which also shows job matches)
-    var text = q.value.trim(); if (!text || !JOBS) return;
-    var hits = LDI.match(text, JOBS, 2);
-    if (hits.length && hits[0].score >= 0.9 && (hits.length === 1 || hits[1].score < hits[0].score - 0.15)) { e.preventDefault(); location.href = hits[0].job.s + ".html"; }
+    q.addEventListener("keydown", function (e) { if (e.key === "Escape") hide(); if (e.key === "ArrowDown" && !sug.hidden) { e.preventDefault(); var f = sug.querySelector("a"); if (f) f.focus(); } });
+    sug.addEventListener("keydown", function (e) { var items = Array.prototype.slice.call(sug.querySelectorAll("a")), i = items.indexOf(document.activeElement); if (e.key === "ArrowDown" && i < items.length - 1) { e.preventDefault(); items[i + 1].focus(); } if (e.key === "ArrowUp") { e.preventDefault(); if (i > 0) items[i - 1].focus(); else q.focus(); } if (e.key === "Escape") { hide(); q.focus(); } });
+    document.addEventListener("click", function (e) { if (!sug.contains(e.target) && e.target !== q) hide(); });
+    form.addEventListener("submit", function (e) {
+      var text = q.value.trim(); if (!text) { e.preventDefault(); q.focus(); return; }
+      form.town.value = townSel ? townSel.value : "";
+      // "I need help with…": a clear single job match goes straight to the job page (v4 behaviour); anything else goes to search.html
+      if (mode === "help" && SET) { var hits = LDI.match(text, SET, 2); if (hits.length && hits[0].score >= 0.9 && (hits.length === 1 || hits[1].score < hits[0].score - 0.15)) { e.preventDefault(); location.href = href(hits[0], text); } }
+    });
   });
 })();
