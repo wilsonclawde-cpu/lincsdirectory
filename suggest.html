@@ -74,6 +74,7 @@
         <label>Website <span class="opt">(optional)</span><input name="website" inputmode="url" maxlength="200" placeholder="www.example.co.uk"></label>
       </div>
       <label>Business phone <span class="opt">(optional, only if it's public)</span><input name="phone" type="tel" maxlength="40"></label>
+      <label class="desc">One line about your business <span class="opt">(optional; if it's your business, shown on the listing, max 100 characters)</span><input name="description" maxlength="100" autocomplete="off" placeholder="e.g. Mobile dog groomer" data-ph-sm="e.g. Dog groomer" enterkeyhint="next"><span class="counter" data-for="description" aria-live="polite">0 / 100</span></label>
       <fieldset style="border:0;padding:0;margin:0">
         <legend style="font-weight:800;font-size:.92rem">Who are you?</legend>
         <div class="who">
@@ -97,7 +98,7 @@
         <h2 class="h3">What happens next</h2>
         <ul>
           <li>We check the business exists and trades from a public address in Lincolnshire, using public records.</li>
-          <li>We add a free listing: name, address, category and a map pin. Nothing else unless the business gives it to us.</li>
+          <li>We add a free listing: name, address or area, category and a map pin. Nothing else unless the business gives it to us (if it's your business, your one-line description goes on too, with an "Added by the business" tag).</li>
           <li>Usually within a few days. If you left an email, we'll tell you when it's live.</li>
           <li>The business can claim, correct or remove its listing at any time.</li>
         </ul>
@@ -186,6 +187,7 @@
     }
     var payload = { access_key: WEB3FORMS_KEY, subject: "LincsDirectory suggestion", from_name: form.name.value.trim() || "LincsDirectory visitor",
       business: form.business.value.trim(), address: form.address.value.trim(), category: form.category.value, website: form.website.value.trim(), phone: form.phone.value.trim(),
+      description: form.description.value.trim().slice(0, 100),
       area_only: form.area_only.checked ? "Covers an area, no shop address" : "", who: form.who.value, name: form.name.value.trim(), email: form.email.value.trim(), message: form.message.value.trim(), consent: form.consent.checked,
       botcheck: form.botcheck.checked ? true : "", page: location.pathname + location.search };
     btn.disabled = true; btn.textContent = "Sending…";

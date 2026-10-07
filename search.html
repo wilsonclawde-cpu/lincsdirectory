@@ -226,30 +226,40 @@
       });
   }
 
+  // v8: owner-added listings (s = "owner": the business asked to be listed) carry an "Added by the business" tag, a one-line
+  // description (d) and a quiet "Update details" link; public-data listings keep "Claim this listing". Directions only where there is
+  // a pin at a real address; service-area listings get "Request a quote" (the Get local help flow, prefilled) where a job exists.
+  function quoteUrl(l) {
+    var job = CAT_JOB[l.c]; if (!job) return null;
+    var cv = LD.cov(l, IDX.towns), t = (state.town && cv.indexOf(state.town) > -1) ? state.town : l.t;
+    return "help.html?job=" + encodeURIComponent(job) + "&town=" + encodeURIComponent(t) + "&need=" + encodeURIComponent("Quote from " + l.n + ": ");
+  }
   function card(l, i) {
-    var prem = l.tier === "premium";
-    var c = LD.el("article", { class: "card" + (prem ? " featured" : "") + (state.active === l.id ? " active" : ""), "data-id": l.id, tabindex: "0" });
+    var prem = l.tier === "premium", owner = LD.isOwner(l), area = !!(l.cov && l.cov.length);
+    var c = LD.el("article", { class: "card" + (prem ? " featured" : "") + (owner ? " owner" : "") + (state.active === l.id ? " active" : ""), "data-id": l.id, tabindex: "0" });
     c.appendChild(LD.el("span", { class: "idx", text: String(i + 1) }));
     if (prem && l.img) c.appendChild(LD.el("div", { class: "photo" }, [LD.el("img", { src: l.img, alt: l.n, loading: "lazy", width: "480", height: "270" })]));
     var h3 = LD.el("h3"); if (prem) h3.appendChild(LD.el("a", { class: "main", href: LD.profileUrl(l), text: l.n })); else h3.textContent = l.n;
     var top = LD.el("div", { class: "top" }, [h3]);
     if (prem) top.appendChild(LD.el("span", { class: "badge premium", text: "Premium" }));
+    else if (owner) top.appendChild(LD.el("span", { class: "badge owner", text: "Added by the business" }));
     c.appendChild(top);
     c.appendChild(LD.el("p", { class: "meta", text: (IDX.cats[l.c] || "") + " · " + townName(l.t) + (l._d != null ? " · " + l._d.toFixed(1) + " miles" : "") }));
     c.appendChild(LD.stars(l, RATINGS));
     c.appendChild(LD.el("p", { text: LD.addr(l, IDX.towns) }));
-    if (prem) {
-      if (l.desc) c.appendChild(LD.el("p", { text: l.desc }));
-      if (l.hrs) c.appendChild(LD.el("p", { class: "small muted", text: "Open: " + l.hrs }));
-    }
+    if (prem && l.desc) c.appendChild(LD.el("p", { text: l.desc }));
+    else if (l.d) c.appendChild(LD.el("p", { class: "d", text: l.d }));
+    if (prem && l.hrs) c.appendChild(LD.el("p", { class: "small muted", text: "Open: " + l.hrs }));
     if (l.ph) { var pp = LD.el("p", { text: "Phone: " }); pp.appendChild(LD.el("a", { href: "tel:+44" + l.ph.replace(/\s+/g, "").replace(/^0/, ""), text: l.ph })); c.appendChild(pp); }
     var acts = LD.el("div", { class: "actions" });
     if (prem) acts.appendChild(LD.el("a", { class: "btn small", href: LD.profileUrl(l), text: "View profile" }));
     if (prem && l.w) acts.appendChild(LD.el("a", { class: "btn small ghost", href: l.w, target: "_blank", rel: "sponsored noopener", text: "Visit website" }));
-    acts.appendChild(LD.el("a", { class: "btn small ghost", href: "https://www.google.com/maps/dir/?api=1&destination=" + l.la + "," + l.lo, target: "_blank", rel: "noopener", text: "Directions" }));
-    if (!prem) acts.appendChild(LD.el("a", { class: "btn small ghost", href: LD.claimUrl(l), text: "Claim this listing" }));
+    if (!area) acts.appendChild(LD.el("a", { class: "btn small ghost", href: "https://www.google.com/maps/dir/?api=1&destination=" + l.la + "," + l.lo, target: "_blank", rel: "noopener", text: "Directions" }));
+    else { var qu = quoteUrl(l); if (qu) acts.appendChild(LD.el("a", { class: "btn small ghost", href: qu, text: "Request a quote" })); }
+    if (owner) acts.appendChild(LD.el("a", { class: "upd", href: LD.claimUrl(l), text: "Update details" }));
+    else if (!prem) acts.appendChild(LD.el("a", { class: "btn small ghost", href: LD.claimUrl(l), text: "Claim this listing" }));
     c.appendChild(acts);
-    c.appendChild(LD.el("p", { class: "src", text: prem ? "Premium listing: details supplied by the business." : LD.sourceNote(l) + (l.ax ? " Location taken from the map, not a recorded address." : "") + " Not yet claimed by the owner, so details may be out of date." }));
+    c.appendChild(LD.el("p", { class: "src", text: prem ? "Premium listing: details supplied by the business." : owner ? LD.sourceNote(l) + (l.d ? " The one-line description is the business's own words, read by us before it appeared." : "") : LD.sourceNote(l) + (l.ax ? " Location taken from the map, not a recorded address." : "") + " Not yet claimed by the owner, so details may be out of date." }));
     c.addEventListener("click", function (e) { if (e.target.tagName !== "A") setActive(l.id, true); });
     c.addEventListener("keydown", function (e) { if (e.key === "Enter" && e.target === c) setActive(l.id, true); });
     return c;
@@ -302,7 +312,7 @@
     subset.forEach(function (l) {
       var key = l.la + "," + l.lo; var k = (seen[key] = (seen[key] || 0) + 1);
       var m = L.marker([l.la + (k - 1) * 0.00012, l.lo], { icon: pin(l, state.active === l.id), title: l.n, keyboard: true });
-      m.bindPopup("<strong>" + l.n.replace(/</g, "&lt;") + "</strong><br>" + LD.addr(l, IDX.towns).replace(/</g, "&lt;"));
+      m.bindPopup("<strong>" + l.n.replace(/</g, "&lt;") + "</strong><br>" + LD.addr(l, IDX.towns).replace(/</g, "&lt;") + (LD.isOwner(l) ? "<br><small class='pop-tag'>Added by the business</small>" : "") + (l.d ? "<br><small>" + l.d.replace(/</g, "&lt;") + "</small>" : ""));
       m.on("click", function () { setActive(l.id, false); });
       m.addTo(layer); markers[l.id] = m;
     });
@@ -325,7 +335,7 @@
 
   /* intent: show matching job pages above the results ("wash my car" -> Wash my car), and widen the search to the job's categories
      when the plain text search finds little. */
-  var JOBS = null, SET = null, CATPAGE = {"rest": "restaurants", "cafe": "cafes-coffee-shops", "take": "takeaways", "pub": "pubs-bars", "hotel": "hotels-bed-and-breakfast", "fun": "things-to-do", "super": "supermarkets-convenience-stores", "food": "food-drink-shops", "shop": "shops", "home": "home-garden-diy", "hair": "hair-beauty", "health": "health-pharmacy", "motor": "garages-motoring", "trade": "trades", "prof": "professional-financial-services", "estate": "estate-agents", "pets": "pets-vets", "leisure": "sport-leisure", "venue": "halls-venues", "cater": "caterers", "serv": "services", "office": "offices-workspace", "plumb": "plumbers-heating", "elec": "electricians", "build": "builders-handyman-trades", "garden": "gardeners-landscapers", "garage": "mot-servicing-tyres", "carwash": "car-washes-valeting", "clean": "cleaners", "remov": "removals-storage", "appl": "appliance-gadget-repair", "lock": "locksmiths", "petserv": "pet-services", "tutor": "tutors-lessons", "photo": "photographers-events"};
+  var JOBS = null, SET = null, CATPAGE = {"rest": "restaurants", "cafe": "cafes-coffee-shops", "take": "takeaways", "pub": "pubs-bars", "hotel": "hotels-bed-and-breakfast", "fun": "things-to-do", "super": "supermarkets-convenience-stores", "food": "food-drink-shops", "shop": "shops", "home": "home-garden-diy", "hair": "hair-beauty", "health": "health-pharmacy", "motor": "garages-motoring", "trade": "trades", "prof": "professional-financial-services", "estate": "estate-agents", "pets": "pets-vets", "leisure": "sport-leisure", "venue": "halls-venues", "cater": "caterers", "serv": "services", "office": "offices-workspace", "plumb": "plumbers-heating", "elec": "electricians", "build": "builders-handyman-trades", "garden": "gardeners-landscapers", "garage": "mot-servicing-tyres", "carwash": "car-washes-valeting", "clean": "cleaners", "remov": "removals-storage", "appl": "appliance-gadget-repair", "lock": "locksmiths", "petserv": "pet-services", "tutor": "tutors-lessons", "photo": "photographers-events"}, CAT_JOB = {"rest": "event-catering", "pub": "hire-a-hall", "hotel": "hire-a-hall", "fun": "kids-party", "shop": "phone-screen-repair", "home": "window-repair", "hair": "haircut", "prof": "accountant", "estate": "estate-agent", "pets": "find-a-vet", "venue": "hire-a-hall", "cater": "event-catering", "serv": "dry-cleaning-and-laundry", "office": "self-storage", "plumb": "fix-a-leak", "elec": "electrical-fault", "build": "handyman", "garden": "fencing", "garage": "mot-test", "carwash": "wash-my-car", "clean": "pressure-washing", "remov": "house-removals", "appl": "washing-machine-repair", "lock": "locked-out", "petserv": "dog-grooming", "tutor": "private-tutor", "photo": "photographer"};   // CAT_JOB: category -> the job slug used by "Request a quote" (v8)
   function catHref(c) { return CATPAGE[c] ? CATPAGE[c] + "-lincolnshire.html" : "search.html?cat=" + c; }
   function jobHits() {
     var box = $("jobHits"); box.hidden = true; box.textContent = ""; box.className = "jobhits" + (state.mode && state.mode !== "help" ? " " + state.mode : "");
