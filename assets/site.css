@@ -651,7 +651,7 @@ form.enquiry .btn,form.helpform .btn,.btn.pay{white-space:normal;text-align:cent
 .jobhits .jh-cats{display:flex;flex-wrap:wrap;gap:.4rem}
 .jobhits .jh-cats a{font:700 .84rem "Manrope",sans-serif;padding:.4rem .8rem;border-radius:99px;border:1.5px solid var(--line);background:#fff;color:var(--ink);text-decoration:none;min-height:36px;display:inline-flex;align-items:center}
 .jobhits .jh-cats a:hover{border-color:var(--ink)}
-/* Promoted listing: subscribe button. Apple Pay wording is only shown when the device reports it can pay (assets: claim.html script). */
+/* Promoted listing: one neutral black Subscribe button (v6: Revolut checkout; no wallet detection or branding). */
 .intent.door .near-ui{grid-template-columns:1fr}
 .subscribe{display:grid;gap:.5rem;margin:.6rem 0 .2rem}
 .subscribe[hidden]{display:none}
@@ -662,3 +662,17 @@ form.enquiry .btn,form.helpform .btn,.btn.pay{white-space:normal;text-align:cent
 .subscribe .tiny{text-align:center;margin:0}
 .price-tag{display:inline-flex;align-items:baseline;gap:.25rem;font-family:"Fraunces",serif;font-weight:800;font-size:1.5rem;color:var(--green)}
 .price-tag small{font:700 .85rem "Manrope",sans-serif;color:var(--muted)}
+/* v6 (2026-10-07): the one-screen pros sign-up */
+.page-hero.compact{padding:clamp(1.4rem,3vw,2.2rem) 0 clamp(1rem,2vw,1.6rem)}
+.page-hero.compact h1{font-size:clamp(1.7rem,4vw,2.8rem)}
+.page-hero.compact .lead{margin-top:.5rem;font-size:1rem}
+form.enquiry.quick{gap:.7rem;padding:1.1rem}
+form.enquiry.quick label{font-size:.9rem}
+form.enquiry.quick input{margin-top:.25rem;min-height:50px;font-size:16px}
+form.enquiry.quick .check{font-size:.82rem;line-height:1.4}
+form.enquiry.quick .btn{width:100%;justify-content:center;min-height:52px;font-size:1.05rem}
+.plans.duo{grid-template-columns:1fr 1fr;gap:.5rem}
+.plans.duo label{padding:.65rem .7rem;font-size:.82rem;line-height:1.3;min-height:64px;align-items:center}
+.plans.duo label input{margin-top:.2rem}
+@media (max-width:359px){.plans.duo{grid-template-columns:1fr}}
+.plan .subscribe{margin:.8rem 0 .2rem}
