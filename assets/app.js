@@ -22,6 +22,13 @@
     var swap = function () { phs.forEach(function (el) { if (!el.getAttribute("data-ph-lg")) el.setAttribute("data-ph-lg", el.getAttribute("placeholder") || ""); el.setAttribute("placeholder", mq.matches ? el.getAttribute("data-ph-sm") : el.getAttribute("data-ph-lg")); }); };
     swap(); if (mq.addEventListener) mq.addEventListener("change", swap); else if (mq.addListener) mq.addListener(swap);
   }
+  /* v8: live character counter for the "One line about your business" field (and any other control with a .counter[data-for] beside it) */
+  document.querySelectorAll(".counter[data-for]").forEach(function (c) {
+    var form = c.closest("form"), f = form && form.elements[c.getAttribute("data-for")]; if (!f || !f.getAttribute) return;
+    var max = parseInt(f.getAttribute("maxlength"), 10) || 0;
+    var upd = function () { var n = f.value.length; c.textContent = n + " / " + max; c.classList.toggle("full", max > 0 && n >= max); };
+    f.addEventListener("input", upd); form.addEventListener("reset", function () { setTimeout(upd, 0); }); upd();
+  });
   var items = document.querySelectorAll(".reveal");
   if (items.length && "IntersectionObserver" in window && !window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
     var io = new IntersectionObserver(function (es) { es.forEach(function (e) { if (e.isIntersecting) { e.target.classList.add("in"); io.unobserve(e.target); } }); }, { rootMargin: "0px 0px -8% 0px" });

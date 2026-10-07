@@ -4,7 +4,9 @@
    drip schedule needs no daily redeploy. Fields: id,n,a,t,p,la,lo,c,s,f,tier (+ph,w,desc,img,hrs on premium).
    Ratings live in data/ratings.json (moderated by hand, loaded lazily); premium listings have a static profile page b-<slug>-<town>.html.
    Optional fields: ph (phone from OpenStreetMap or the business), cov (service-area business: array of town ids it covers, no street
-   address shown), ax (1 = address derived from the map: shown as "near ..."). */
+   address shown; Free listings use the first 3, Promoted all of them or "all" = the whole county, see cov() below), ax (1 = address
+   derived from the map: shown as "near ..."), d (v8: one-line description, <= 100 characters, supplied by the business and moderated;
+   shown on Free and Promoted cards). s = "owner" means the business asked to be listed (cards say "Added by the business"). */
 window.LD = (function () {
   var BASE = (document.querySelector('meta[name="ld-base"]') || {}).content || "";
   function pad(n) { return (n < 10 ? "0" : "") + n; }
@@ -57,10 +59,10 @@ window.LD = (function () {
     return index().then(function (idx) {
       var files = idx.files.filter(function (f) { return !town || f.towns.indexOf(town) > -1; });
       return Promise.all(files.map(function (f) {
-        return getJSON(BASE + "data/" + f.file).then(function (rows) { rows.forEach(function (r) { r.d = f.district; }); return rows; });
+        return getJSON(BASE + "data/" + f.file).then(function (rows) { rows.forEach(function (r) { r._district = f.district; }); return rows; });   // (was r.d; `d` is the one-line description since v8)
       })).then(function (parts) {
         var all = [];
-        parts.forEach(function (p) { p.forEach(function (r) { if (isLive(r) && (!town || r.t === town || (r.cov && r.cov.indexOf(town) > -1))) all.push(r); }); });
+        parts.forEach(function (p) { p.forEach(function (r) { if (isLive(r) && (!town || r.t === town || cov(r, idx.towns).indexOf(town) > -1)) all.push(r); }); });
         return all;
       });
     });
@@ -206,19 +208,37 @@ window.LD = (function () {
     return n;
   }
   function fmt(n) { return n.toLocaleString("en-GB"); }
+  // Service-area coverage (v8). Mirrors effective_cov() in build/listing_rules.py: a Free listing covers its home area, the first
+  // FREE_COV_MAX towns in cov; a Promoted listing covers every town in cov, or the whole county when cov is ["all"]. [] = no cov.
+  var FREE_COV_MAX = 3;
+  function coversAll(l) { return !!(l.cov && l.cov.indexOf("all") > -1 && l.tier === "premium"); }
+  function cov(l, towns) {
+    if (!l.cov || !l.cov.length) return [];
+    if (l.cov.indexOf("all") > -1) return l.tier === "premium" ? Object.keys(towns || {}) : [l.t];
+    var ids = towns ? l.cov.filter(function (t) { return !!towns[t]; }) : l.cov.slice();
+    return l.tier === "premium" ? ids : ids.slice(0, FREE_COV_MAX);
+  }
   // Address line: service-area businesses show the towns they cover; map-derived locations are "near ...". Mirrors addr_text() in build/make_site.py.
   function addr(l, towns) {
-    if (l.cov && l.cov.length) { var names = l.cov.map(function (t) { return towns && towns[t] ? towns[t].name : t; }); return "Covers " + (names.length > 1 ? names.slice(0, -1).join(", ") + " and " + names[names.length - 1] : names[0]); }
+    if (l.cov && l.cov.length) {
+      if (coversAll(l)) return "Covers all of Lincolnshire";
+      var names = cov(l, towns).map(function (t) { return towns && towns[t] ? towns[t].name : t; });
+      if (!names.length) names = [towns && towns[l.t] ? towns[l.t].name : l.t];
+      return "Covers " + (names.length > 1 ? names.slice(0, -1).join(", ") + " and " + names[names.length - 1] : names[0]);
+    }
     if (l.ax) return "Near " + l.a + " (map location)";
     return l.a + (l.p ? ", " + l.p : "");
   }
   function claimUrl(l) { return BASE + "claim.html?id=" + encodeURIComponent(l.id) + "&name=" + encodeURIComponent(l.n) + "&town=" + encodeURIComponent(l.t); }
+  // Owner-added listing (the business asked to be listed through the sign-up / suggest form): never shown as "unclaimed".
+  function isOwner(l) { return l.s === "owner" && l.tier !== "premium"; }
   function sourceNote(l) {
     if (l.s === "fsa") return "Listed from Food Standards Agency public data (OGL v3.0).";
     if (l.s === "osm") return "Listed from OpenStreetMap data (© OpenStreetMap contributors, ODbL).";
     if (l.s === "aide") return "Listed by Aide, TAG Sleaford's directory, from public records.";
+    if (l.s === "owner") return "Added at the business's request; details as supplied by the business.";
     return "Details supplied by the business.";
   }
   return { TODAY: TODAY, BASE: BASE, index: index, listings: listings, nearest: nearest, isLive: isLive, liveCounts: liveCounts, parseQuery: parseQuery, search: search, sortResults: sortResults, miles: miles, el: el, fmt: fmt, claimUrl: claimUrl, sourceNote: sourceNote, SYN: SYN, addr: addr,
-    ratings: ratings, stars: stars, rateUrl: rateUrl, profileUrl: profileUrl, slug: slug };
+    ratings: ratings, stars: stars, rateUrl: rateUrl, profileUrl: profileUrl, slug: slug, cov: cov, coversAll: coversAll, isOwner: isOwner, FREE_COV_MAX: FREE_COV_MAX };
 })();

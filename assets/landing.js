@@ -12,12 +12,13 @@
       if (!rows.length) return;
       root.textContent = "";
       rows.forEach(function (l, i) {
-        var prem = l.tier === "premium";
+        var prem = l.tier === "premium", owner = LD.isOwner(l);
         var href = prem ? LD.profileUrl(l) : "search.html?id=" + encodeURIComponent(l.id) + "&town=" + l.t;
-        var row = LD.el("div", { class: "lrow" + (prem ? " prem" : "") });
+        var row = LD.el("div", { class: "lrow" + (prem ? " prem" : "") + (owner ? " owner" : "") });
         row.appendChild(LD.el("span", { class: "i", text: String(i + 1) }));
-        var mid = LD.el("div", {}, [LD.el("a", { class: "main", href: href, text: l.n }), LD.el("span", { class: "a", text: (town ? "" : (idx.towns[l.t] ? idx.towns[l.t].name + " · " : "")) + (cat ? "" : (idx.cats[l.c] || "") + " · ") + LD.addr(l, idx.towns) }), LD.stars(l, R)]);
+        var mid = LD.el("div", {}, [LD.el("a", { class: "main", href: href, text: l.n }), LD.el("span", { class: "a", text: (town ? "" : (idx.towns[l.t] ? idx.towns[l.t].name + " · " : "")) + (cat ? "" : (idx.cats[l.c] || "") + " · ") + LD.addr(l, idx.towns) }), (l.d && !prem ? LD.el("span", { class: "d", text: l.d }) : null), LD.stars(l, R)]);
         if (prem) mid.insertBefore(LD.el("span", { class: "badge premium", text: "Premium" }), mid.firstChild);
+        else if (owner) mid.insertBefore(LD.el("span", { class: "badge owner", text: "Added by the business" }), mid.firstChild);
         row.appendChild(mid); row.appendChild(LD.el("span", { class: "go", text: prem ? "Profile ›" : "Map ›" })); root.appendChild(row);
       });
       var n = document.getElementById("liveN"); if (n) n.textContent = LD.fmt(rows.length);

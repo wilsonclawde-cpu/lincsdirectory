@@ -820,3 +820,33 @@ section.band.dark .promo-cta .alt,section.band.dark .promo-cta .tiny{color:var(-
 .m-link{font-weight:800;color:var(--green);text-decoration:underline;text-underline-offset:3px;font-size:.9rem}
 .mock.cancel .m-url{margin:.8rem 0 0}
 section.band.dark .promo-cta .btn.pay{color:#fff;background:#000;border-color:#000}section.band.dark .promo-cta .btn.pay:hover{background:#222;border-color:#222;color:#fff}
+
+/* ---- v8 (2026-10-07): the Free listing content set. Owner-added listings (s="owner") carry a quiet "Added by the business" tag, a
+   one-line description (d) and an "Update details" text link instead of "Claim this listing"; forms get the 100-character field with a
+   live counter; promoted.html gets the coverage illustration (Free: home area, up to 3 towns; Promoted: as many as you serve / all). */
+.badge.owner{background:var(--soft);color:var(--green);letter-spacing:.06em}
+.card .d{font-size:.95rem;color:var(--ink);margin:0 0 .35rem}
+.card.owner .src{color:var(--muted)}
+.card .actions a.upd{align-self:center;font-size:.86rem;font-weight:700;color:var(--muted);text-decoration:underline;text-underline-offset:3px;padding:.2rem .1rem}
+.card .actions a.upd:hover{color:var(--green)}
+.lrow .d{display:block;font-size:.9rem;color:var(--ink);margin-top:.15rem}
+.lrow .badge.owner{margin-bottom:.25rem}
+.leaflet-popup-content .pop-tag{display:inline-block;margin-top:.25rem;font:800 .66rem "Manrope",sans-serif;letter-spacing:.06em;text-transform:uppercase;color:var(--green);background:var(--soft);padding:.15rem .45rem;border-radius:99px}
+form.enquiry .counter{display:block;text-align:right;font-size:.78rem;font-weight:700;color:var(--muted);margin-top:.25rem}
+form.enquiry .counter.full{color:var(--coral-deep)}
+.compare .txt{font-weight:700;color:var(--ink)}
+.m-card.owner{opacity:1}
+.m-upd{align-self:center;font-size:.78rem;font-weight:700;color:var(--muted);text-decoration:underline;text-underline-offset:3px}
+.mock.cover{padding:1rem;display:grid;gap:.9rem}
+.m-cov{display:grid;gap:.45rem;background:#fff;border:1px solid var(--line);border-radius:12px;padding:.9rem}
+.m-cov.prem{border:2px solid var(--coral);background:linear-gradient(180deg,#fff,#FFF8F5)}
+.m-towns{display:flex;flex-wrap:wrap;gap:.3rem}
+.m-towns span{font:700 .72rem "Manrope",sans-serif;padding:.2rem .5rem;border-radius:99px;background:var(--cream);color:var(--muted);border:1px solid var(--line)}
+.m-towns span.on{background:var(--green);color:#fff;border-color:var(--green)}
+.m-cov.prem .m-towns span.on{background:#C43A12;border-color:#C43A12}
+.m-cov .m-addr{color:var(--ink)}
+form.enquiry.quick label.desc{position:relative}
+form.enquiry.quick label.desc .counter{position:absolute;right:0;top:.1rem;margin:0}
+@media (max-width:640px){form.enquiry.quick{gap:.5rem}}
+.chiprow select{flex:none;min-width:15.5rem}   /* v8 fit check: the longest town option ("Market Deeping (38)") was 1px wider than the select's text box on phones */
+@media (max-width:640px){form.enquiry.quick label.desc .opt{display:none}form.enquiry.quick label.desc .counter{font-size:.74rem}}   /* v8: on phones the quick form shows the counter in place of "(optional)" so the label stays on one line */
