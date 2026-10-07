@@ -58,7 +58,7 @@ private Business Centre folder, not in the repo). Edit the generator, re-run it,
   placements and appear first; the terms (`terms.html#promoted`) and about page say so. Set-up and fees: `build/PAYMENT-SETUP.md`.
 * **House cards** for Kesteven Business Centre (offices from £250/month, meeting room from £15/hr, day office) and Aide (reports from
   £4.99) carry a small, muted "Premium listing" tag (never the word "Advertisement", which put people off). Third-party slots: price on enquiry.
-* No contact email is published (no lincsdirectory.co.uk mailbox yet). Forms go to Web3Forms. Phone 01522 424963 is published
+* The contact email hello@lincsdirectory.co.uk is published. Forms go to Web3Forms (delivered to hello@). Phone 01522 424963 is published
   **without opening hours**. The Business Centre's own record says "24-hour access for tenants" and nothing about staffed hours (never
   confirmed; do not add them). GLOW's confirmed hours: Mon–Fri 8am–4.30pm, closed Sat & Sun.
 
@@ -232,7 +232,7 @@ GitHub web UI only (no CLI): repo → Add file → Upload files → drag the cha
 
 ## Contact mailbox
 
-`hello@lincsdirectory.co.uk` is the public contact address (GoDaddy Microsoft 365 mailbox, added to Outlook on Francis's PC). It appears as a mailto link on `about.html`, `advertise.html`, `claim.html`, `privacy.html`, `pros.html` and `terms.html` (generated from `build/make_site.py`). Form enquiries still go through Web3Forms to francis@tagsleaford.com; the mailbox is for people who email directly.
+`hello@lincsdirectory.co.uk` is the public contact address (GoDaddy Microsoft 365 mailbox, added to Outlook on Francis's PC). It appears as a mailto link on `about.html`, `advertise.html`, `claim.html`, `privacy.html`, `pros.html` and `terms.html` (generated from `build/make_site.py`). Form enquiries go through Web3Forms (access key in `build/make_site.py` as `W3F_KEY`, created under the hello@ Web3Forms account) to the same mailbox. Aide still uses the older key and delivers to francis@tagsleaford.com.
 
 ## Data sources and rules
 

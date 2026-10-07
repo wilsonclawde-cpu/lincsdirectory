@@ -213,7 +213,7 @@
 <script src="assets/app.js" defer></script>
 <script>
 (function () {
-  var FORM_ENDPOINT = "https://api.web3forms.com/submit", WEB3FORMS_KEY = "4011b5b9-4b83-437a-a35d-baac02080912", PHONE = "01522 424963";
+  var FORM_ENDPOINT = "https://api.web3forms.com/submit", WEB3FORMS_KEY = "8d954ebb-0c01-4ef1-8ced-41034861f95a", PHONE = "01522 424963";
   var form = document.getElementById("proForm"), btn = document.getElementById("proBtn"), msg = document.getElementById("proMsg");
   var params = new URLSearchParams(location.search);
   if (params.get("job")) { var cb = form.querySelector('input[name=jobs][data-slug="' + params.get("job") + '"]'); if (cb) { cb.checked = true; var d = cb.closest("details"); if (d) d.open = true; } }
