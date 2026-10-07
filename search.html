@@ -108,7 +108,7 @@
   <div class="wrap grid c2" style="align-items:center">
     <div>
       <h2>Run one of these businesses?</h2>
-      <p class="lead" style="margin-top:.6rem">Claim your listing free, or get Promoted for £2.49 a month: your own profile page with photo, website, phone and hours, first in results with the Premium tag, and a free Aide business report when you start. Cancel any time. <a href="promoted.html">See what you get</a>.</p>
+      <p class="lead" style="margin-top:.6rem">Claim your listing free, or get Promoted for £2.49 a month: your own profile page with logo, photos, full description, website, phone and hours, first in results with the Premium tag, and a free Aide business report when you start. Cancel any time. <a href="promoted.html">See what you get</a>.</p>
     </div>
     <p style="margin:0;display:flex;gap:.6rem;flex-wrap:wrap"><a class="btn" href="claim.html">Claim or update</a><a class="btn ghost" href="suggest.html">Suggest a business</a></p>
   </div>
@@ -240,22 +240,23 @@
     var prem = l.tier === "premium", owner = LD.isOwner(l), area = !!(l.cov && l.cov.length), o = LD.ownerText(l);
     var c = LD.el("article", { class: "card" + (prem ? " featured" : "") + (owner ? " owner" : "") + (state.active === l.id ? " active" : ""), "data-id": l.id, tabindex: "0" });
     c.appendChild(LD.el("span", { class: "idx", text: String(i + 1) }));
-    if (prem && l.img) c.appendChild(LD.el("div", { class: "photo" }, [LD.el("img", { src: l.img, alt: l.n, loading: "lazy", width: "480", height: "270" })]));
+    var hero = prem ? LD.hero(l) : null;   // v10: hero photo (img, else the first gallery image); the rest of the gallery lives on the profile page
+    if (hero) c.appendChild(LD.el("div", { class: "photo" }, [LD.el("img", { src: hero.src, alt: hero.alt || l.n, loading: "lazy", width: "480", height: "270" })]));
     var h3 = LD.el("h3"); if (prem) h3.appendChild(LD.el("a", { class: "main", href: LD.profileUrl(l), text: l.n })); else h3.textContent = l.n;
     var top = LD.el("div", { class: "top" }, [h3]);
+    if (prem && l.logo) top.insertBefore(LD.el("img", { class: "clogo", src: l.logo, alt: "", loading: "lazy", width: "48", height: "48" }), h3);   // v10: small logo (decorative: the name is beside it)
     if (prem) top.appendChild(LD.el("span", { class: "badge premium", text: "Premium" }));
     else if (owner) top.appendChild(LD.el("span", { class: "badge owner", text: "Added by the business" }));
     c.appendChild(top);
     c.appendChild(LD.el("p", { class: "meta", text: (IDX.cats[l.c] || "") + " · " + townName(l.t) + (l._d != null ? " · " + l._d.toFixed(1) + " miles" : "") }));
     c.appendChild(LD.stars(l, RATINGS));
     c.appendChild(LD.el("p", { text: LD.addr(l, IDX.towns) }));
-    if (prem && o.desc) c.appendChild(LD.el("p", { text: o.desc }));          // Promoted cards keep their full description
-    else if (o.d) c.appendChild(LD.el("p", { class: "d", text: o.d }));
-    var more = LD.moreEl(l, !prem); if (more) c.appendChild(more);   // v9: "More about this business": service bullets (+ description on Free)
-    if (prem && l.hrs) c.appendChild(LD.el("p", { class: "small muted", text: "Open: " + l.hrs }));
+    if (o.d) c.appendChild(LD.el("p", { class: "d", text: o.d }));            // v10: Promoted cards show the one line + first bullets; the full description is on the profile
+    if (prem) { var cs = LD.cardSvc(l); if (cs) c.appendChild(cs); }
+    else { var more = LD.moreEl(l, true); if (more) c.appendChild(more); }   // v9: "More about this business": service bullets + description on Free
     if (l.ph) { var pp = LD.el("p", { text: "Phone: " }); pp.appendChild(LD.el("a", { href: "tel:+44" + l.ph.replace(/\s+/g, "").replace(/^0/, ""), text: l.ph })); c.appendChild(pp); }
     var acts = LD.el("div", { class: "actions" });
-    if (prem) acts.appendChild(LD.el("a", { class: "btn small", href: LD.profileUrl(l), text: "View profile" }));
+    if (prem) acts.appendChild(LD.el("a", { class: "btn small", href: LD.profileUrl(l), text: "See full profile →" }));
     if (prem && l.w) acts.appendChild(LD.el("a", { class: "btn small ghost", href: l.w, target: "_blank", rel: "sponsored noopener", text: "Visit website" }));
     if (!area) acts.appendChild(LD.el("a", { class: "btn small ghost", href: "https://www.google.com/maps/dir/?api=1&destination=" + l.la + "," + l.lo, target: "_blank", rel: "noopener", text: "Directions" }));
     var qu = (area || owner || prem) ? quoteUrl(l) : null;
@@ -317,7 +318,8 @@
     subset.forEach(function (l) {
       var key = l.la + "," + l.lo; var k = (seen[key] = (seen[key] || 0) + 1);
       var m = L.marker([l.la + (k - 1) * 0.00012, l.lo], { icon: pin(l, state.active === l.id), title: l.n, keyboard: true });
-      m.bindPopup("<strong>" + l.n.replace(/</g, "&lt;") + "</strong><br>" + LD.addr(l, IDX.towns).replace(/</g, "&lt;") + (LD.isOwner(l) ? "<br><small class='pop-tag'>Added by the business</small>" : "") + (LD.ownerText(l).d ? "<br><small>" + LD.ownerText(l).d.replace(/</g, "&lt;") + "</small>" : ""));
+      m.bindPopup("<strong>" + l.n.replace(/</g, "&lt;") + "</strong><br>" + LD.addr(l, IDX.towns).replace(/</g, "&lt;") + (LD.isOwner(l) ? "<br><small class='pop-tag'>Added by the business</small>" : "") + (LD.ownerText(l).d ? "<br><small>" + LD.ownerText(l).d.replace(/</g, "&lt;") + "</small>" : "")
+        + (l.tier === "premium" ? '<br><a class="pop-link" href="' + LD.profileUrl(l) + '">See full profile →</a>' : ""));   // v10: Promoted pins link through to the profile page
       m.on("click", function () { setActive(l.id, false); });
       m.addTo(layer); markers[l.id] = m;
     });
