@@ -850,3 +850,54 @@ form.enquiry.quick label.desc .counter{position:absolute;right:0;top:.1rem;margi
 @media (max-width:640px){form.enquiry.quick{gap:.5rem}}
 .chiprow select{flex:none;min-width:15.5rem}   /* v8 fit check: the longest town option ("Market Deeping (38)") was 1px wider than the select's text box on phones */
 @media (max-width:640px){form.enquiry.quick label.desc .opt{display:none}form.enquiry.quick label.desc .counter{font-size:.74rem}}   /* v8: on phones the quick form shows the counter in place of "(optional)" so the label stays on one line */
+
+/* ---- v9 (2026-10-07): claimed / owner-added listings get up to 3 service bullets and a short description under a plain
+   "More about this business" <details> (keyboard accessible, no script); "Request a quote" carries the lead notice; the claim and pros
+   forms get the three service inputs + the 400-character description with a live counter. */
+details.more{margin:.2rem 0 .4rem}
+details.more summary{cursor:pointer;list-style:none;display:inline-flex;align-items:center;gap:.4rem;font:800 .86rem "Manrope",sans-serif;color:var(--green);padding:.3rem .1rem;min-height:32px;text-decoration:underline;text-underline-offset:3px;text-decoration-thickness:1.5px;border-radius:4px}
+details.more summary::-webkit-details-marker{display:none}
+details.more summary::before{content:"";flex:none;width:.45em;height:.45em;border-right:2px solid currentColor;border-bottom:2px solid currentColor;transform:rotate(-45deg);transition:transform .15s;margin:0 .1rem 0 .05rem}
+details.more[open] summary::before{transform:rotate(45deg) translate(-1px,-1px)}
+details.more summary:hover{color:var(--ink)}
+details.more summary:focus-visible{outline:3px solid var(--coral);outline-offset:2px}
+details.more .more-body{padding:.35rem 0 .15rem}
+ul.svc{list-style:none;padding:0;margin:0 0 .55rem;display:grid;gap:.3rem}
+ul.svc li{display:flex;align-items:flex-start;gap:.45rem;font-size:.92rem;font-weight:700;color:var(--ink);line-height:1.35}
+ul.svc li svg{flex:none;color:var(--green);margin-top:.15rem}
+ul.svc.big{margin:.6rem 0 0;gap:.4rem}ul.svc.big li{font-size:1.02rem}
+details.more .long{font-size:.92rem;color:var(--ink);margin:0;line-height:1.5;overflow-wrap:anywhere}
+.lrow details.more{position:relative;z-index:1}   /* sits above the row's full-size link overlay (a.main::after) so the toggle is clickable */
+.lrow details.more .long{color:var(--muted)}
+.lrow details.more summary{font-size:.82rem}
+.qnote{font-size:.78rem;color:var(--muted);margin:.45rem 0 0;line-height:1.4}
+.card .qnote{margin-top:.4rem}
+.profile-copy .qnote{margin:.4rem 0 0;color:#C6D4C9}
+.detail-fields{display:grid;gap:.9rem}
+.svcfields .lbl{display:block;font-weight:800;font-size:.92rem}
+.svcfields input{margin-top:.35rem}.svcfields input+input{margin-top:.45rem}
+form.enquiry label.dlong textarea{min-height:7.5rem}
+details.moredetail{border:1.5px dashed var(--line);border-radius:12px;padding:0 .9rem;background:#fff}
+details.moredetail summary{cursor:pointer;list-style:none;font-weight:800;font-size:.92rem;padding:.6rem 0;min-height:44px;display:flex;align-items:center;gap:.4rem}
+details.moredetail summary::-webkit-details-marker{display:none}
+details.moredetail summary::after{content:"+";margin-left:auto;font:600 1.3rem "Fraunces",serif;color:var(--green);line-height:1}
+details.moredetail[open] summary::after{content:"\2212"}
+details.moredetail[open]{border-style:solid;padding-bottom:.9rem}
+details.moredetail summary .opt{font-weight:600;color:var(--muted)}
+form.enquiry.quick details.moredetail label.desc .counter{position:static;display:block;text-align:right;margin-top:.25rem}
+@media (max-width:640px){form.enquiry.quick details.moredetail label.desc .opt{display:inline}}
+.m-more{font:700 .76rem "Manrope",sans-serif;color:var(--green);margin:.15rem 0 0}
+#helpBiz strong{color:var(--ink)}
+/* v9: on the one-screen pros form the toggle sits beside the submit button, so the default screen is no taller; open, it takes the row */
+.actrow{display:flex;flex-wrap:wrap;align-items:center;gap:.6rem .9rem}
+.actrow details.moredetail.inline{border:0;padding:0;background:none;flex:0 1 auto;order:0}
+.actrow details.moredetail.inline summary{padding:.5rem 0;min-height:44px;color:var(--green);text-decoration:underline;text-underline-offset:3px;text-decoration-thickness:1.5px}
+.actrow details.moredetail.inline summary::after{content:"+";margin-left:.1rem}
+.actrow details.moredetail.inline[open]{flex:1 1 100%;order:0;border:1.5px solid var(--line);border-radius:12px;padding:0 .9rem .9rem;background:#fff}
+.actrow details.moredetail.inline[open] summary{text-decoration:none;color:var(--ink)}
+.actrow details.moredetail.inline[open] summary::after{content:"\2212";margin-left:auto}
+.actrow #proBtn{order:1}
+@media (max-width:640px){.actrow details.moredetail.inline summary .opt{display:none}}
+form.enquiry.quick .actrow #proBtn{width:auto;flex:1 1 6rem;min-width:0}
+form.enquiry.quick .actrow details.moredetail.inline[open]+#proBtn{flex-basis:100%}
+form.enquiry.quick .actrow.stack #proBtn{flex-basis:100%}

@@ -6,7 +6,9 @@
    Optional fields: ph (phone from OpenStreetMap or the business), cov (service-area business: array of town ids it covers, no street
    address shown; Free listings use the first 3, Promoted all of them or "all" = the whole county, see cov() below), ax (1 = address
    derived from the map: shown as "near ..."), d (v8: one-line description, <= 100 characters, supplied by the business and moderated;
-   shown on Free and Promoted cards). s = "owner" means the business asked to be listed (cards say "Added by the business"). */
+   shown on Free and Promoted cards), svc + desc (v9: up to 3 service bullets of <= 60 characters and a <= 400-character description on
+   owner-added / claimed listings, shown under a "More about this business" toggle; Promoted: up to 8 bullets, <= 1,200 characters).
+   s = "owner" means the business asked to be listed (cards say "Added by the business"). */
 window.LD = (function () {
   var BASE = (document.querySelector('meta[name="ld-base"]') || {}).content || "";
   function pad(n) { return (n < 10 ? "0" : "") + n; }
@@ -239,6 +241,34 @@ window.LD = (function () {
     if (l.s === "owner") return "Added at the business's request; details as supplied by the business.";
     return "Details supplied by the business.";
   }
+  // v9 owner text (mirrors listing_rules.owner_text in the build): d = one line (<= 100), svc = up to 3 bullets (Promoted 8) of <= 60
+  // characters, desc = short description (<= 400; Promoted <= 1,200 on the profile page). d falls back to the first sentence of desc.
+  // The build already refuses records over the limits; the client only tidies and derives.
+  var D_MAX = 100, SVC_MAX = 3, SVC_MAX_PREMIUM = 8;
+  var LEAD_NOTE = "Your request goes to LincsDirectory, which passes it to this business.";
+  function firstSentence(s, n) {
+    s = (s || "").replace(/\s+/g, " ").trim(); if (!s) return "";
+    var m = s.match(/^(.+?[.!?])(\s|$)/); s = m ? m[1] : s;
+    if (s.length <= n) return s;
+    var cut = s.slice(0, n - 1); return cut.slice(0, cut.lastIndexOf(" ")).replace(/[,;:]+$/, "") + "…";
+  }
+  function ownerText(l) {
+    var prem = l.tier === "premium", desc = (l.desc || "").replace(/\s+/g, " ").trim();
+    var svc = (l.svc || []).map(function (s) { return (s || "").replace(/\s+/g, " ").trim(); }).filter(Boolean).slice(0, prem ? SVC_MAX_PREMIUM : SVC_MAX);
+    var d = (l.d || "").replace(/\s+/g, " ").trim() || firstSentence(desc, D_MAX);
+    return { d: d, svc: svc, desc: desc };
+  }
+  // "More about this business": a plain <details> (keyboard accessible, no script needed) with the service bullets and, unless
+  // showDesc is false (Promoted cards already show the full description), the description. Null when there is nothing to show.
+  var TICK = '<svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true" focusable="false"><path d="M5 12.5l4.5 4.5L19 7" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+  function moreEl(l, showDesc) {
+    var o = ownerText(l), desc = showDesc === false ? "" : o.desc;
+    if (!o.svc.length && !desc) return null;
+    var body = el("div", { class: "more-body" });
+    if (o.svc.length) { var ul = el("ul", { class: "svc" }); o.svc.forEach(function (s) { var li = el("li", { html: TICK }); li.appendChild(el("span", { text: s })); ul.appendChild(li); }); body.appendChild(ul); }
+    if (desc) body.appendChild(el("p", { class: "long", text: desc }));
+    return el("details", { class: "more" }, [el("summary", { text: "More about this business" }), body]);
+  }
   return { TODAY: TODAY, BASE: BASE, index: index, listings: listings, nearest: nearest, isLive: isLive, liveCounts: liveCounts, parseQuery: parseQuery, search: search, sortResults: sortResults, miles: miles, el: el, fmt: fmt, claimUrl: claimUrl, sourceNote: sourceNote, SYN: SYN, addr: addr,
-    ratings: ratings, stars: stars, rateUrl: rateUrl, profileUrl: profileUrl, slug: slug, cov: cov, coversAll: coversAll, isOwner: isOwner, FREE_COV_MAX: FREE_COV_MAX };
+    ratings: ratings, stars: stars, rateUrl: rateUrl, profileUrl: profileUrl, slug: slug, cov: cov, coversAll: coversAll, isOwner: isOwner, FREE_COV_MAX: FREE_COV_MAX, ownerText: ownerText, moreEl: moreEl, LEAD_NOTE: LEAD_NOTE };
 })();
