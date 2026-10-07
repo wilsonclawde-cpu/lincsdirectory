@@ -7,7 +7,9 @@
    address shown; Free listings use the first 3, Promoted all of them or "all" = the whole county, see cov() below), ax (1 = address
    derived from the map: shown as "near ..."), d (v8: one-line description, <= 100 characters, supplied by the business and moderated;
    shown on Free and Promoted cards), svc + desc (v9: up to 3 service bullets of <= 60 characters and a <= 400-character description on
-   owner-added / claimed listings, shown under a "More about this business" toggle; Promoted: up to 8 bullets, <= 1,200 characters).
+   owner-added / claimed listings, shown under a "More about this business" toggle; Promoted (v10): up to 20 bullets of <= 80 characters
+   and a <= 2,000-character description in paragraphs, plus logo (image path) and gallery ([{src, alt, caption}], up to 8): the card
+   shows the logo, the one line and the first 3 bullets with a "See full profile" button; everything else lives on the profile page).
    s = "owner" means the business asked to be listed (cards say "Added by the business"). */
 window.LD = (function () {
   var BASE = (document.querySelector('meta[name="ld-base"]') || {}).content || "";
@@ -241,10 +243,10 @@ window.LD = (function () {
     if (l.s === "owner") return "Added at the business's request; details as supplied by the business.";
     return "Details supplied by the business.";
   }
-  // v9 owner text (mirrors listing_rules.owner_text in the build): d = one line (<= 100), svc = up to 3 bullets (Promoted 8) of <= 60
-  // characters, desc = short description (<= 400; Promoted <= 1,200 on the profile page). d falls back to the first sentence of desc.
-  // The build already refuses records over the limits; the client only tidies and derives.
-  var D_MAX = 100, SVC_MAX = 3, SVC_MAX_PREMIUM = 8;
+  // v9 owner text (mirrors listing_rules.owner_text in the build): d = one line (<= 100), svc = up to 3 bullets of <= 60 characters
+  // (Promoted, v10: 20 of <= 80), desc = short description (<= 400; Promoted <= 2,000 on the profile page, paragraphs collapsed here).
+  // d falls back to the first sentence of desc. The build already refuses records over the limits; the client only tidies and derives.
+  var D_MAX = 100, SVC_MAX = 3, SVC_MAX_PREMIUM = 20, CARD_SVC = 3;
   var LEAD_NOTE = "Your request goes to LincsDirectory, which passes it to this business.";
   function firstSentence(s, n) {
     s = (s || "").replace(/\s+/g, " ").trim(); if (!s) return "";
@@ -269,6 +271,25 @@ window.LD = (function () {
     if (desc) body.appendChild(el("p", { class: "long", text: desc }));
     return el("details", { class: "more" }, [el("summary", { text: "More about this business" }), body]);
   }
+  // v10: a Promoted card / hub row shows the first CARD_SVC bullets plainly (no toggle) and says how many more are on the profile page.
+  // Mirrors card_svc_html() in build/make_site.py. Null when the listing has no bullets.
+  function cardSvc(l) {
+    if (l.tier !== "premium") return null;
+    var o = ownerText(l), first = o.svc.slice(0, CARD_SVC);
+    if (!first.length) return null;
+    var ul = el("ul", { class: "svc card-svc" });
+    first.forEach(function (s) { var li = el("li", { html: TICK }); li.appendChild(el("span", { text: s })); ul.appendChild(li); });
+    var rest = o.svc.length - first.length;
+    if (!rest) return ul;
+    return el("div", {}, [ul, el("span", { class: "svc-more", text: "+" + rest + " more on the profile" })]);
+  }
+  // v10: the hero image of a Promoted listing: img, else the first gallery photo. {src, alt} or null.
+  function hero(l) {
+    if (l.tier !== "premium") return null;
+    if (l.img) return { src: l.img, alt: l.n };
+    if (l.gallery && l.gallery.length && l.gallery[0].src) return { src: l.gallery[0].src, alt: l.gallery[0].alt || l.n };
+    return null;
+  }
   return { TODAY: TODAY, BASE: BASE, index: index, listings: listings, nearest: nearest, isLive: isLive, liveCounts: liveCounts, parseQuery: parseQuery, search: search, sortResults: sortResults, miles: miles, el: el, fmt: fmt, claimUrl: claimUrl, sourceNote: sourceNote, SYN: SYN, addr: addr,
-    ratings: ratings, stars: stars, rateUrl: rateUrl, profileUrl: profileUrl, slug: slug, cov: cov, coversAll: coversAll, isOwner: isOwner, FREE_COV_MAX: FREE_COV_MAX, ownerText: ownerText, moreEl: moreEl, LEAD_NOTE: LEAD_NOTE };
+    ratings: ratings, stars: stars, rateUrl: rateUrl, profileUrl: profileUrl, slug: slug, cov: cov, coversAll: coversAll, isOwner: isOwner, FREE_COV_MAX: FREE_COV_MAX, ownerText: ownerText, moreEl: moreEl, cardSvc: cardSvc, hero: hero, CARD_SVC: CARD_SVC, LEAD_NOTE: LEAD_NOTE };
 })();

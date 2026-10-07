@@ -26,20 +26,21 @@ window.LD_ICONS={"rest": "<svg viewBox=\"0 0 24 24\" width=\"22\" height=\"22\" 
       });
     var fl = $("featuredList");
     (idx.featured || []).filter(function (f) { return !f.f || f.f <= LD.TODAY; }).forEach(function (f) {
-      var ph = LD.el("div", { class: "ph" });
-      if (f.img) ph.appendChild(LD.el("img", { src: f.img, alt: f.n, loading: "lazy", width: "480", height: "270" })); else ph.appendChild(document.createTextNode(f.n.charAt(0)));
+      var ph = LD.el("div", { class: "ph" }), hero = LD.hero(f);
+      if (hero) ph.appendChild(LD.el("img", { src: hero.src, alt: hero.alt || f.n, loading: "lazy", width: "480", height: "270" })); else if (f.logo) ph.appendChild(LD.el("img", { class: "logo", src: f.logo, alt: f.n, loading: "lazy", width: "160", height: "160" })); else ph.appendChild(document.createTextNode(f.n.charAt(0)));
       var h3 = LD.el("h3"); h3.appendChild(LD.el("a", { class: "main", href: LD.profileUrl(f), text: f.n }));
+      var o = LD.ownerText(f);   // v10: the carousel shows the one line; the full description lives on the profile page
       var body = LD.el("div", { class: "body" }, [LD.el("span", { class: "badge premium", text: "Premium" }), h3,
-        LD.el("p", { class: "muted small", text: (idx.cats[f.c] || "") + " · " + (idx.towns[f.t] ? idx.towns[f.t].name : "") }), LD.stars(f, RATINGS), LD.el("p", { class: "small", text: f.desc || "" })]);
+        LD.el("p", { class: "muted small", text: (idx.cats[f.c] || "") + " · " + (idx.towns[f.t] ? idx.towns[f.t].name : "") }), LD.stars(f, RATINGS), LD.el("p", { class: "small", text: o.d || "" })]);
       var acts = LD.el("div", { class: "actions" });
-      acts.appendChild(LD.el("a", { class: "btn small", href: LD.profileUrl(f), text: "View profile" }));
+      acts.appendChild(LD.el("a", { class: "btn small", href: LD.profileUrl(f), text: "See full profile →" }));
       if (f.w) acts.appendChild(LD.el("a", { class: "btn small ghost", href: f.w, target: "_blank", rel: "sponsored noopener", text: "Website" }));
       if (f.ph) acts.appendChild(LD.el("a", { class: "btn small ghost", href: "tel:+44" + f.ph.replace(/\s+/g, "").replace(/^0/, ""), text: f.ph }));
       body.appendChild(acts); fl.appendChild(LD.el("article", { class: "fcard" }, [ph, body]));
     });
     fl.appendChild(LD.el("article", { class: "fcard you" }, [LD.el("div", { class: "ph", text: "Your business here" }),
       LD.el("div", { class: "body" }, [LD.el("span", { class: "badge", text: "£2.49 a month, VAT included" }), LD.el("h3", { text: "Get Promoted" }),
-        LD.el("p", { class: "small", text: "Your own profile page with photo, website, phone and hours, and first place in results for your town and category. Plus a free Aide business report." }),
+        LD.el("p", { class: "small", text: "Your own profile page with your logo, photos, a full description and up to 20 service points, your website, phone and hours, and first place in results for the towns you cover. Plus a free Aide business report." }),
         LD.el("div", { class: "actions" }, [LD.el("a", { class: "btn small coral", href: "pros.html?plan=promoted", text: "Get Promoted" })])])]));
   }).catch(function () { $("townList").textContent = "Listings are loading slowly. Try the search page."; });
 
@@ -78,7 +79,7 @@ window.LD_ICONS={"rest": "<svg viewBox=\"0 0 24 24\" width=\"22\" height=\"22\" 
       L.marker([center.lat, center.lng], { icon: L.divIcon({ className: "", html: '<div class="me"></div>', iconSize: [16, 16], iconAnchor: [8, 8] }), title: label }).addTo(layer);
       rows.forEach(function (l) {
         L.marker([l.la, l.lo], { icon: L.divIcon({ className: "", html: '<div class="pin' + (l.tier === "premium" ? " prem" : "") + '"></div>', iconSize: [22, 22], iconAnchor: [11, 22] }), title: l.n })
-          .bindPopup("<strong>" + l.n.replace(/</g, "&lt;") + "</strong><br>" + LD.addr(l, IDX.towns).replace(/</g, "&lt;")).addTo(layer); pts.push([l.la, l.lo]);
+          .bindPopup("<strong>" + l.n.replace(/</g, "&lt;") + "</strong><br>" + LD.addr(l, IDX.towns).replace(/</g, "&lt;") + (l.tier === "premium" ? '<br><a class="pop-link" href="' + LD.profileUrl(l) + '">See full profile →</a>' : "")).addTo(layer); pts.push([l.la, l.lo]);
       });
       map.fitBounds(pts, { padding: [24, 24], maxZoom: 14 }); setTimeout(function () { map.invalidateSize(); map.fitBounds(pts, { padding: [24, 24], maxZoom: 14 }); }, 150);
       status.textContent = ""; panel.scrollIntoView({ behavior: "smooth", block: "start" });

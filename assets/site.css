@@ -901,3 +901,71 @@ form.enquiry.quick details.moredetail label.desc .counter{position:static;displa
 form.enquiry.quick .actrow #proBtn{width:auto;flex:1 1 6rem;min-width:0}
 form.enquiry.quick .actrow details.moredetail.inline[open]+#proBtn{flex-basis:100%}
 form.enquiry.quick .actrow.stack #proBtn{flex-basis:100%}
+
+/* ---------- v10 (2026-10-07): the richer Promoted profile page (logo, gallery, full description, 20 service points, coverage chips) and the
+   card -> profile click-through ("See full profile"). Blocks with no data are not rendered at all, so an image-less profile has no empty slots. */
+.profile-id{display:flex;align-items:flex-start;gap:1rem}
+.profile-id>div{min-width:0}
+.plogo{flex:none;width:clamp(64px,9vw,104px);height:clamp(64px,9vw,104px);object-fit:contain;background:#fff;border-radius:18px;padding:.45rem;box-shadow:var(--shadow-sm)}
+@media (max-width:480px){.profile-id{flex-direction:column;gap:.6rem}}
+.profile-photo.logo-only{background:#fff;padding:clamp(1.2rem,5vw,3rem)}
+.profile-photo.logo-only img{object-fit:contain;max-height:14rem;width:auto;margin:0 auto}
+.profile-hero .cta .btn.coral{color:var(--ink)}
+.prose.about p{font-size:clamp(1.02rem,1.4vw,1.15rem);line-height:1.6;color:var(--ink);max-width:none;margin:0 0 .9em}
+.prose.about p:last-child{margin-bottom:0}
+ul.svc.cols{grid-template-columns:1fr}
+@media (min-width:720px){ul.svc.cols{grid-template-columns:1fr 1fr;column-gap:1.4rem}}
+ul.svc.cols li span{overflow-wrap:anywhere}
+/* gallery grid: every item a link to the image file; the <dialog> viewer below is progressive enhancement */
+.gallery{list-style:none;padding:0;margin:0;display:grid;grid-template-columns:repeat(auto-fill,minmax(10rem,1fr));gap:.7rem}
+@media (max-width:420px){.gallery{grid-template-columns:1fr 1fr;gap:.5rem}}
+.gallery figure{margin:0;display:flex;flex-direction:column;gap:.3rem;min-width:0}
+.gallery a{display:block;border-radius:12px;overflow:hidden;aspect-ratio:4/3;background:var(--soft);border:1px solid var(--line)}
+.gallery a:hover img{transform:scale(1.03)}
+.gallery img{width:100%;height:100%;object-fit:cover;transition:transform .25s var(--ease)}
+.gallery figcaption{font-size:.82rem;color:var(--muted);line-height:1.35;overflow-wrap:anywhere}
+.gview{border:0;border-radius:var(--r-lg);padding:.8rem;max-width:min(96vw,1200px);width:min(96vw,1200px);background:var(--ink);color:#fff;box-shadow:var(--shadow-lg)}
+.gview::backdrop{background:rgba(15,42,36,.82);backdrop-filter:blur(4px)}
+.gview .gbar{display:flex;justify-content:space-between;align-items:center;gap:.6rem;margin-bottom:.5rem}
+.gview .gcount{font-weight:800;font-size:.9rem;color:#DCE8DF}
+.gview img{width:100%;height:auto;max-height:calc(100vh - 11rem);object-fit:contain;border-radius:12px;background:#000}
+.gview .gcap{margin:.6rem 0 0;color:#DCE8DF;font-size:.95rem;text-align:center;min-height:1.4em}
+.gview .gnav{display:flex;justify-content:space-between;gap:.6rem;margin-top:.5rem}
+.gview .btn.ghost{color:#fff;border-color:rgba(255,255,255,.7)}
+.gview .btn.ghost:hover{background:#fff;color:var(--ink)}
+.towns-cov a{font-size:.88rem}
+.quote-box{margin-top:1rem;padding:.9rem;border:1.5px dashed var(--coral);border-radius:14px;background:var(--coral-soft)}
+.quote-box .btn{width:100%;justify-content:center}
+.quote-box p{margin:.5rem 0 0;font-size:.8rem}
+/* cards and rows: small logo, first service points, the click-through */
+.card .top{align-items:center}
+.card .clogo{width:48px;height:48px;object-fit:contain;border-radius:10px;background:#fff;border:1px solid var(--line);padding:.2rem;flex:none}
+.card .top h3{flex:1 1 10rem;min-width:0}
+ul.svc.card-svc{margin:.1rem 0 .3rem}
+.svc-more{display:block;font:700 .78rem "Manrope",sans-serif;color:var(--green);margin:-.1rem 0 .4rem}
+.lrow .rlogo{float:left;width:40px;height:40px;object-fit:contain;border-radius:8px;background:#fff;border:1px solid var(--line);padding:.15rem;margin:.1rem .6rem .2rem 0}
+.lrow ul.svc.card-svc{margin:.3rem 0 0;gap:.15rem;clear:both}
+.lrow ul.svc.card-svc li{font-size:.86rem}
+.lrow .svc-more{margin:.1rem 0 0}
+.lrow .go a.golink{position:relative;z-index:1;display:block;font-size:.82rem;font-weight:800;color:var(--green);text-decoration:underline;text-underline-offset:3px;text-decoration-thickness:1.5px;white-space:nowrap}
+.lrow .go a.golink:hover{color:var(--ink)}
+@media (max-width:480px){.lrow.prem .go{display:block;grid-column:2;margin-top:.2rem}.lrow .go a.golink{display:inline}}
+.leaflet-popup-content a.pop-link{display:inline-block;margin-top:.3rem;font-weight:800;color:var(--green)}
+.fcard .ph img.logo{width:40%;height:auto;object-fit:contain;background:#fff;border-radius:16px;padding:.6rem;margin:auto}
+/* the example profile: an illustration, never a real business */
+.demo-banner{background:var(--coral-soft);color:var(--ink);border:2px solid var(--coral);border-radius:14px;padding:.8rem 1rem;margin:.6rem 0 1.2rem;font-size:.95rem;line-height:1.5}
+.demo-banner a{color:var(--coral-deep);font-weight:700}
+.ph-block{display:flex;align-items:center;justify-content:center;background:repeating-linear-gradient(135deg,var(--soft) 0 10px,#DCE2DA 10px 20px);color:var(--muted);font:800 .8rem "Manrope",sans-serif;letter-spacing:.06em;text-transform:uppercase;border-radius:12px;aspect-ratio:4/3;width:100%;text-align:center;padding:.5rem}
+.ph-block.hero{aspect-ratio:3/2;height:100%;border-radius:0}
+.plogo.ph-block{width:clamp(64px,9vw,104px);height:clamp(64px,9vw,104px);aspect-ratio:1;font-size:.6rem;padding:.3rem;border-radius:18px;flex:none}
+.inert{cursor:default;opacity:.92}
+.inert.btn:hover{transform:none}
+/* promoted.html mock-ups: logo chip, two service columns, gallery blocks */
+.m-logo{display:inline-grid;place-items:center;width:2rem;height:2rem;border-radius:8px;background:#fff;border:1px solid var(--line);font:800 .5rem "Manrope",sans-serif;letter-spacing:.04em;text-transform:uppercase;color:var(--muted);flex:none;margin-right:.3rem}
+.mock.profile .m-logo{width:2.4rem;height:2.4rem;margin:0 0 .2rem}
+.m-cols{display:grid;grid-template-columns:1fr 1fr;gap:.2rem .6rem;font:700 .74rem "Manrope",sans-serif;color:var(--ink)}
+.m-cols i{font-style:normal;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.m-gal{display:grid;grid-template-columns:repeat(4,1fr);gap:.3rem}
+.m-gal i{display:block;aspect-ratio:4/3;border-radius:6px;background:linear-gradient(135deg,var(--green),var(--moss));opacity:.85}
+.m-gal.big{margin-top:.3rem;gap:.45rem}
+.m-gal.big i{border-radius:10px}

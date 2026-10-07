@@ -16,11 +16,14 @@
         var href = prem ? LD.profileUrl(l) : "search.html?id=" + encodeURIComponent(l.id) + "&town=" + l.t;
         var row = LD.el("div", { class: "lrow" + (prem ? " prem" : "") + (owner ? " owner" : "") });
         row.appendChild(LD.el("span", { class: "i", text: String(i + 1) }));
-        var o = LD.ownerText(l);   // v9: one line + "More about this business" (bullets + description) on owner-added rows
-        var mid = LD.el("div", {}, [LD.el("a", { class: "main", href: href, text: l.n }), LD.el("span", { class: "a", text: (town ? "" : (idx.towns[l.t] ? idx.towns[l.t].name + " · " : "")) + (cat ? "" : (idx.cats[l.c] || "") + " · ") + LD.addr(l, idx.towns) }), (o.d && !prem ? LD.el("span", { class: "d", text: o.d }) : null), LD.stars(l, R), (prem ? null : LD.moreEl(l, true))]);
+        var o = LD.ownerText(l);   // v9: one line + "More about this business" (bullets + description) on owner-added rows; v10: Promoted rows show the one line + first bullets + "See full profile"
+        var mid = LD.el("div", {}, [(prem && l.logo ? LD.el("img", { class: "rlogo", src: l.logo, alt: "", loading: "lazy", width: "40", height: "40" }) : null), LD.el("a", { class: "main", href: href, text: l.n }), LD.el("span", { class: "a", text: (town ? "" : (idx.towns[l.t] ? idx.towns[l.t].name + " · " : "")) + (cat ? "" : (idx.cats[l.c] || "") + " · ") + LD.addr(l, idx.towns) }), (o.d ? LD.el("span", { class: "d", text: o.d }) : null), LD.stars(l, R), (prem ? LD.cardSvc(l) : LD.moreEl(l, true))]);
         if (prem) mid.insertBefore(LD.el("span", { class: "badge premium", text: "Premium" }), mid.firstChild);
         else if (owner) mid.insertBefore(LD.el("span", { class: "badge owner", text: "Added by the business" }), mid.firstChild);
-        row.appendChild(mid); row.appendChild(LD.el("span", { class: "go", text: prem ? "Profile ›" : "Map ›" })); root.appendChild(row);
+        var go = LD.el("span", { class: "go" });
+        if (l.ph) go.appendChild(LD.el("a", { class: "ph", href: "tel:+44" + l.ph.replace(/\s+/g, "").replace(/^0/, ""), text: l.ph }));
+        if (prem) go.appendChild(LD.el("a", { class: "golink", href: href, text: "See full profile →" })); else go.appendChild(document.createTextNode("Map ›"));
+        row.appendChild(mid); row.appendChild(go); root.appendChild(row);
       });
       var n = document.getElementById("liveN"); if (n) n.textContent = LD.fmt(rows.length);
       var f = document.getElementById("fresh"); if (f) f.textContent = "List refreshed today from the live data.";
