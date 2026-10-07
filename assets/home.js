@@ -2,7 +2,7 @@ window.LD_ICONS={"rest": "<svg viewBox=\"0 0 24 24\" width=\"22\" height=\"22\" 
 /* Home page: live counts, towns, categories, featured carousel, near-me (client-side only) and the help form. */
 (function () {
   var $ = function (id) { return document.getElementById(id); };
-  var W3F = "https://api.web3forms.com/submit", KEY = "4011b5b9-4b83-437a-a35d-baac02080912", PHONE = "01522 424963";
+  var W3F = "https://api.web3forms.com/submit", KEY = "8d954ebb-0c01-4ef1-8ced-41034861f95a", PHONE = "01522 424963";
   var IDX = null, LIVECOUNTS = null, RATINGS = {};
   var TOWN_PAGE = function (t) { return t + "-business-directory.html"; };
   Promise.all([LD.index(), LD.ratings()]).then(function (res) {

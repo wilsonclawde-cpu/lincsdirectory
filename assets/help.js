@@ -1,7 +1,7 @@
 /* "Get local help" requests -> Web3Forms. Subject: "LincsDirectory job request: <job> – <town> [<urgency>]". Nothing is shared automatically:
    a person reads each request and passes it to listed businesses that cover the area, only with the consent given on the form. */
 (function () {
-  var W3F = "https://api.web3forms.com/submit", KEY = "4011b5b9-4b83-437a-a35d-baac02080912", PHONE = "01522 424963";
+  var W3F = "https://api.web3forms.com/submit", KEY = "8d954ebb-0c01-4ef1-8ced-41034861f95a", PHONE = "01522 424963";
   var params = new URLSearchParams(location.search);
   function townName(sel) { var o = sel.options[sel.selectedIndex]; return o && o.value ? o.textContent : ""; }
   Array.prototype.forEach.call(document.querySelectorAll("form.helpform"), function (form) {
