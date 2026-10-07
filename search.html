@@ -108,7 +108,7 @@
   <div class="wrap grid c2" style="align-items:center">
     <div>
       <h2>Run one of these businesses?</h2>
-      <p class="lead" style="margin-top:.6rem">Claim your listing free, or get Promoted for £2.49 a month: your own profile page with photo, website, phone and hours, first in results with the Premium tag, and a free Aide business report when you start. Cancel any time.</p>
+      <p class="lead" style="margin-top:.6rem">Claim your listing free, or get Promoted for £2.49 a month: your own profile page with photo, website, phone and hours, first in results with the Premium tag, and a free Aide business report when you start. Cancel any time. <a href="promoted.html">See what you get</a>.</p>
     </div>
     <p style="margin:0;display:flex;gap:.6rem;flex-wrap:wrap"><a class="btn" href="claim.html">Claim or update</a><a class="btn ghost" href="suggest.html">Suggest a business</a></p>
   </div>
@@ -263,11 +263,12 @@
     status.textContent = "";
     if (state.how) {   // v5 buy / fancy: say plainly what the list is (keyword matches, or the whole category when the words matched nothing)
       status.appendChild(LD.el("strong", { text: state.how.lead }));
-      status.appendChild(document.createTextNode(" " + state.how.rest + (state.user ? " Nearest first." : "") + " Premium listings appear first."));
+      status.appendChild(document.createTextNode(" " + state.how.rest + (state.user ? " Nearest first." : "") + " Premium listings appear first. "));
     } else {
       status.appendChild(LD.el("strong", { text: LD.fmt(n) + (n === 1 ? " result" : " results") }));
-      status.appendChild(document.createTextNode(" for " + what + " " + where + (state.user ? ", nearest first" : "") + (state.jobCats ? " (businesses that do “" + state.jobCats + "”)" : "") + ". Premium listings appear first."));
+      status.appendChild(document.createTextNode(" for " + what + " " + where + (state.user ? ", nearest first" : "") + (state.jobCats ? " (businesses that do “" + state.jobCats + "”)" : "") + ". Premium listings appear first. "));
     }
+    status.appendChild(LD.el("a", { href: "promoted.html", text: "What's this?" }));
     var h1 = state.q ? (state.mode === "buy" ? "Where to buy " + state.q + " " + where : state.mode === "fancy" ? "Fancy " + state.q + "? " + where.replace(/^in /, "In ").replace(/^across/, "Across") : state.mode === "help" ? "Help with " + state.q + " " + where : "Results for " + state.q + " " + where)
            : (state.cat ? IDX.cats[state.cat] + " " + where : (state.town ? "Businesses in " + townName(state.town) : "Search Lincolnshire businesses"));
     document.title = (h1.length > 44 ? h1.slice(0, 43) + "…" : h1) + " | LincsDirectory";
