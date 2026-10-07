@@ -873,6 +873,8 @@ details.more .long{font-size:.92rem;color:var(--ink);margin:0;line-height:1.5;ov
 .qnote{font-size:.78rem;color:var(--muted);margin:.45rem 0 0;line-height:1.4}
 .card .qnote{margin-top:.4rem}
 .profile-copy .qnote{margin:.4rem 0 0;color:#C6D4C9}
+.qnote a,.quote-box p a{font-weight:700;text-decoration:underline}
+.profile-copy .qnote a{color:#fff}
 .detail-fields{display:grid;gap:.9rem}
 .svcfields .lbl{display:block;font-weight:800;font-size:.92rem}
 .svcfields input{margin-top:.35rem}.svcfields input+input{margin-top:.45rem}
