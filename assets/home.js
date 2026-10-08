@@ -39,7 +39,7 @@ window.LD_ICONS={"rest": "<svg viewBox=\"0 0 24 24\" width=\"22\" height=\"22\" 
       body.appendChild(acts); fl.appendChild(LD.el("article", { class: "fcard" }, [ph, body]));
     });
     fl.appendChild(LD.el("article", { class: "fcard you" }, [LD.el("div", { class: "ph", text: "Your business here" }),
-      LD.el("div", { class: "body" }, [LD.el("span", { class: "badge", text: "£2.49 a month, VAT included" }), LD.el("h3", { text: "Get Promoted" }),
+      LD.el("div", { class: "body" }, [LD.el("span", { class: "badge", text: "£2.49 a month" }), LD.el("h3", { text: "Get Promoted" }),
         LD.el("p", { class: "small", text: "Your own profile page with your logo, photos, a full description and up to 20 service points, your website, phone and hours, and first place in results for the towns you cover. Plus a free Aide business report." }),
         LD.el("div", { class: "actions" }, [LD.el("a", { class: "btn small coral", href: "pros.html?plan=promoted", text: "Get Promoted" })])])]));
   }).catch(function () { $("townList").textContent = "Listings are loading slowly. Try the search page."; });
