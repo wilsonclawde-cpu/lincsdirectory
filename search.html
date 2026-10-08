@@ -264,7 +264,6 @@
     if (owner) acts.appendChild(LD.el("a", { class: "upd", href: LD.claimUrl(l), text: "Update details" }));
     else if (!prem) acts.appendChild(LD.el("a", { class: "btn small ghost", href: LD.claimUrl(l), text: "Claim this listing" }));
     c.appendChild(acts);
-    if (qu && (owner || prem)) c.appendChild(LD.phoneLine("qnote"));
     c.appendChild(LD.el("p", { class: "src", text: prem ? "Premium listing: details supplied by the business." : owner ? LD.sourceNote(l) + ((o.d || o.desc || o.svc) ? " The description and services are the business's own words, read by us before they appeared." : "") : LD.sourceNote(l) + (l.ax ? " Location taken from the map, not a recorded address." : "") + " Not yet claimed by the owner, so details may be out of date." }));
     c.addEventListener("click", function (e) { if (e.target.tagName !== "A" && !(e.target.closest && e.target.closest("details"))) setActive(l.id, true); });
     c.addEventListener("keydown", function (e) { if (e.key === "Enter" && e.target === c) setActive(l.id, true); });
