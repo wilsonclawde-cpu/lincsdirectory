@@ -2,14 +2,14 @@
    a person reads each request and passes it to listed businesses that cover the area, only with the consent given on the form.
    v9 lead routing: a "Request a quote" link from a listing adds ?lid=<listing id>&bn=<business name>. The request still comes to
    LincsDirectory (hello@), with hidden listing_id / listing_name fields, the subject "Lead from LincsDirectory: <business> – <job>, <town>
-   [<urgency>]" and a consent sentence that names the business; we pass it on to that business (and, if it cannot help, to others). */
+   [<urgency>]" and a consent sentence that names the business; v12: we pass requests to Promoted businesses covering the job and town first, to free listings (which can include the named business) only if no Promoted business covers it. */
 (function () {
   var W3F = "https://api.web3forms.com/submit", KEY = "8d954ebb-0c01-4ef1-8ced-41034861f95a", PHONE = "01522 424963";
   var params = new URLSearchParams(location.search);
   var LID = (params.get("lid") || "").trim().slice(0, 80), BN = (params.get("bn") || "").replace(/\s+/g, " ").trim().slice(0, 120);
   if (!LID) BN = "";
   var CONSENT_GENERIC = "I agree LincsDirectory can pass my request to local businesses that may contact me about it. I've read the privacy notice.";
-  var CONSENT_NAMED = BN ? "I agree LincsDirectory can pass my request to " + BN + " (and, if it cannot help, to other local businesses that may contact me about it). I've read the privacy notice." : "";
+  var CONSENT_NAMED = BN ? "I agree LincsDirectory can pass my request to " + BN + " and to other local businesses that may contact me about it. I've read the privacy notice." : "";
   function townName(sel) { var o = sel.options[sel.selectedIndex]; return o && o.value ? o.textContent : ""; }
   function clipSubject(bn, job, town, when) {   // <= 150 characters: trim the business name first, then the job
     var tail = ", " + town + " [" + when + "]", head = "Lead from LincsDirectory: ";
@@ -33,8 +33,8 @@
       var hid = function (n, v) { var i = document.createElement("input"); i.type = "hidden"; i.name = n; i.value = v; form.appendChild(i); return i; };
       hid("listing_id", LID); hid("listing_name", BN);
       var cs = form.querySelector("label.check input[name=consent] + span");
-      if (cs && BN) { cs.textContent = ""; cs.appendChild(document.createTextNode("I agree LincsDirectory can pass my request to ")); cs.appendChild(Object.assign(document.createElement("strong"), { textContent: BN })); cs.appendChild(document.createTextNode(" (and, if it cannot help, to other local businesses that may contact me about it). I've read the ")); var a = document.createElement("a"); a.href = "privacy.html#requests"; a.textContent = "privacy notice"; cs.appendChild(a); cs.appendChild(document.createTextNode(".")); }
-      var h1 = document.getElementById("helpJobTitle"); if (h1 && BN) h1.textContent = "we'll pass it to " + BN + ".";
+      if (cs && BN) { cs.textContent = ""; cs.appendChild(document.createTextNode("I agree LincsDirectory can pass my request to ")); cs.appendChild(Object.assign(document.createElement("strong"), { textContent: BN })); cs.appendChild(document.createTextNode(" and to other local businesses that may contact me about it. I've read the ")); var a = document.createElement("a"); a.href = "privacy.html#requests"; a.textContent = "privacy notice"; cs.appendChild(a); cs.appendChild(document.createTextNode(".")); }
+      var h1 = document.getElementById("helpJobTitle"); if (h1 && BN) h1.textContent = "we'll pass it on.";
       var biz = document.getElementById("helpBiz"); if (biz && BN) { biz.hidden = false; biz.querySelector("strong").textContent = BN; }
       form.classList.add("leadform");
     }
@@ -44,7 +44,7 @@
       if (!need || !town || !name) { show("err", "Please say what you need doing, choose your town and give your name."); return; }
       if (!phone && !email) { show("err", "Please give a phone number or an email address so a business can reach you."); return; }
       if (email && !form.email.validity.valid) { show("err", "That email address doesn't look right."); return; }
-      if (!form.consent.checked) { show("err", BN ? "Please tick the box so we can pass your request to " + BN + "." : "Please tick the box so we can pass your request to local businesses."); return; }
+      if (!form.consent.checked) { show("err", BN ? "Please tick the box so we can pass your request on, including to " + BN + "." : "Please tick the box so we can pass your request to local businesses."); return; }
       var when = form.when.value || "This week", jobTitle = form.job_title.value || need.slice(0, 60), tn = townName(form.town);
       var payload = { access_key: KEY, subject: BN ? clipSubject(BN, jobTitle, tn, when) : "LincsDirectory job request: " + jobTitle + " – " + tn + " [" + when + "]", from_name: name,
         job: form.job_slug.value, job_title: form.job_title.value, need: need, town: tn, town_id: town, postcode: form.postcode.value.trim().toUpperCase(), when: when, name: name, phone: phone, email: email,
@@ -53,7 +53,7 @@
       btn.disabled = true; btn.textContent = "Sending…";
       fetch(W3F, { method: "POST", headers: { "Content-Type": "application/json", "Accept": "application/json" }, body: JSON.stringify(payload) })
         .then(function (r) { return r.json().catch(function () { return {}; }); })
-        .then(function (res) { if (res && res.success) { form.reset(); show("ok", BN ? "Thanks — your request has reached LincsDirectory. We'll pass it to " + BN + ", who may be in touch by phone or email." : "Thanks — we'll pass your request to local businesses that cover your area. They may be in touch by phone or email."); } else show("err", "That didn't send. Please try again or phone " + PHONE + "."); })
+        .then(function (res) { if (res && res.success) { form.reset(); show("ok", BN ? "Thanks — your request has reached LincsDirectory. We'll pass it on to local businesses that cover your job and town, which may include " + BN + "; they may be in touch by phone or email." : "Thanks — we'll pass your request to local businesses that cover your area. They may be in touch by phone or email."); } else show("err", "That didn't send. Please try again or phone " + PHONE + "."); })
         .catch(function () { show("err", "That didn't send. Please try again or phone " + PHONE + "."); })
         .then(function () { btn.disabled = false; btn.textContent = label; });
     });

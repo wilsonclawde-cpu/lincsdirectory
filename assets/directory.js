@@ -247,9 +247,6 @@ window.LD = (function () {
   // (Promoted, v10: 20 of <= 80), desc = short description (<= 400; Promoted <= 2,000 on the profile page, paragraphs collapsed here).
   // d falls back to the first sentence of desc. The build already refuses records over the limits; the client only tidies and derives.
   var D_MAX = 100, SVC_MAX = 3, SVC_MAX_PREMIUM = 20, CARD_SVC = 3;
-  // v11: under "Request a quote" the card shows the LincsDirectory company number (the footer one, never the listed business's number).
-  var QUOTE_PHONE = { lead: "Prefer to phone? Call us on ", num: "01522 424963", tel: "tel:+441522424963" };
-  function phoneLine(cls) { var p = el("p", { class: cls || "qnote", text: QUOTE_PHONE.lead }); p.appendChild(el("a", { href: QUOTE_PHONE.tel, text: QUOTE_PHONE.num })); return p; }
   function firstSentence(s, n) {
     s = (s || "").replace(/\s+/g, " ").trim(); if (!s) return "";
     var m = s.match(/^(.+?[.!?])(\s|$)/); s = m ? m[1] : s;
@@ -293,5 +290,5 @@ window.LD = (function () {
     return null;
   }
   return { TODAY: TODAY, BASE: BASE, index: index, listings: listings, nearest: nearest, isLive: isLive, liveCounts: liveCounts, parseQuery: parseQuery, search: search, sortResults: sortResults, miles: miles, el: el, fmt: fmt, claimUrl: claimUrl, sourceNote: sourceNote, SYN: SYN, addr: addr,
-    ratings: ratings, stars: stars, rateUrl: rateUrl, profileUrl: profileUrl, slug: slug, cov: cov, coversAll: coversAll, isOwner: isOwner, FREE_COV_MAX: FREE_COV_MAX, ownerText: ownerText, moreEl: moreEl, cardSvc: cardSvc, hero: hero, CARD_SVC: CARD_SVC, phoneLine: phoneLine };
+    ratings: ratings, stars: stars, rateUrl: rateUrl, profileUrl: profileUrl, slug: slug, cov: cov, coversAll: coversAll, isOwner: isOwner, FREE_COV_MAX: FREE_COV_MAX, ownerText: ownerText, moreEl: moreEl, cardSvc: cardSvc, hero: hero, CARD_SVC: CARD_SVC };
 })();
