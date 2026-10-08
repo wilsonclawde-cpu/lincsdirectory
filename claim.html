@@ -205,6 +205,31 @@
   if (params.get("id")) form.listing_id.value = params.get("id");
   if (params.get("town")) form.town.value = params.get("town").replace(/-/g, " ").replace(/\b\w/g, function (c) { return c.toUpperCase(); });
   if (params.get("note")) form.message.value = params.get("note");
+  /* v14 prefill: when the link carries ?id=, look the listing up in the public data files and fill the empty fields with what we already
+     publish (one line, bullets, description, towns, website, phone, hours), so the owner only has to correct it. Never overwrites
+     anything already typed; fails silently (the form works without it). */
+  (function prefill() {
+    var id = params.get("id"); if (!id || !window.fetch) return;
+    function nice(t) { return String(t).replace(/-/g, " ").replace(/\b\w/g, function (c) { return c.toUpperCase(); }); }
+    function put(el, v, max) { if (el && v && !el.value) el.value = String(v).slice(0, max); }
+    function apply(l) {
+      if (!l) return;
+      put(form.business, l.n, 160); put(form.town, nice(l.t), 80);
+      put(form.description, l.d, 100);
+      var sv = l.svc || []; put(form.service_1, sv[0], 60); put(form.service_2, sv[1], 60); put(form.service_3, sv[2], 60);
+      put(form.description_long, l.desc, 400);
+      if (l.cov && l.cov.length && l.cov[0] !== "all") put(form.coverage, l.cov.map(nice).join(", "), 300);
+      put(form.website, l.w, 200); put(form.phone, l.ph, 40); put(form.hours, l.hrs, 200);
+    }
+    fetch("data/index.json", { cache: "no-cache" }).then(function (r) { return r.json(); }).then(function (ix) {
+      var hit = (ix.featured || []).filter(function (x) { return x.id === id; })[0];
+      if (hit) return apply(hit);
+      var t = params.get("town") || "";
+      var files = (ix.files || []).filter(function (f) { return !t || (f.towns || []).indexOf(t) > -1; });
+      return files.reduce(function (p, f) { return p.then(function (done) { if (done) return done;
+        return fetch("data/" + f.file, { cache: "no-cache" }).then(function (r) { return r.json(); }).then(function (a) { var l = a.filter(function (x) { return x.id === id; })[0]; if (l) { apply(l); return true; } return false; }); }); }, Promise.resolve(false));
+    }).catch(function () {});
+  })();
   var planParam = params.get("plan");
   var PREMIUM = "Promoted listing £2.49/month";
   if (planParam === "premium" || planParam === "promoted") form.plan.value = PREMIUM;
