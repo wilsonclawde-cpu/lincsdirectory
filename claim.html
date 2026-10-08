@@ -94,7 +94,7 @@
         <label>Website <span class="opt">(shown on Premium listings)</span><input name="website" inputmode="url" maxlength="200" placeholder="www.example.co.uk"></label>
         <label style="margin-top:1rem">Opening hours <span class="opt">(shown on Premium listings)</span><input name="hours" maxlength="200" placeholder="e.g. Mon–Sat 9am–5pm"></label>
         <div class="subscribe" id="subscribeBox" hidden></div>
-        <p class="note coral" style="margin-top:1rem" id="promotedNote">Send this form and we'll email you the secure £2.49 a month subscribe link (card or Revolut Pay, through Revolut) and ask for your photo and a short description. A person switches your listing to Promoted within one working day of seeing your payment; your free Aide business report follows by email.</p>
+        <p class="note coral" style="margin-top:1rem" id="promotedNote">Send this form and we'll email you the secure £2.49 a month subscribe link (Apple Pay, Google Pay or card, where your device supports them, through Stripe) and ask for your photo and a short description. A person switches your listing to Promoted within one working day of seeing your payment; your free Aide business report follows by email.</p>
       </div>
       <label>Anything we should know <span class="opt">(corrections, what to change, a reply to a rating, or why you'd like the listing removed)</span><textarea name="message" maxlength="4000"></textarea></label>
       <div class="hp" aria-hidden="true"><label>Leave this box empty<input type="checkbox" name="botcheck" tabindex="-1" autocomplete="off"></label></div>
@@ -119,7 +119,7 @@
     <div class="pc-act"><a class="btn small coral pc-cta" href="promoted.html">Click here to see what you get <span aria-hidden="true">&rarr;</span></a></div>
   </div>
 </div>
-      <p class="small muted" style="margin:0">Promoted is £2.49 a month (VAT included), billed monthly; no contract, cancel any time and the listing goes back to free at the end of the paid month. Secure checkout by Revolut: pay by card or Revolut Pay. Use the same email on the checkout as on this form so we can match your payment to your listing. We never take card details by phone or email. Free listings show only what we publish from public data; we never add phone numbers, emails or hours unless you give them to us. <a href="terms.html#promoted">Terms</a> · <a href="terms.html#payments">who bills you</a>.</p>
+      <p class="small muted" style="margin:0">Promoted is £2.49 a month (VAT included), billed monthly; no contract, cancel any time and the listing goes back to free at the end of the paid month. Secure checkout by Stripe: pay with Apple Pay, Google Pay or card, where your device supports them. Use the same email on the checkout as on this form so we can match your payment to your listing. We never take card details by phone or email. Free listings show only what we publish from public data; we never add phone numbers, emails or hours unless you give them to us. <a href="terms.html#promoted">Terms</a> · <a href="terms.html#payments">who bills you</a>.</p>
       <div class="note"><strong>Customer requests.</strong> Customer requests reach you as emails marked “Lead from LincsDirectory”. Promoted businesses covering the job and town get requests first; free listings get them only when no Promoted business covers it. We aim to pass them on by email within one working day; we can't promise how many you'll get. Details in the <a href="terms.html#introductions">terms</a>.</div>
       <div class="note">
         <strong>Prefer to talk?</strong> Phone <a href="tel:+441522424963">01522 424963</a>, email <a href="mailto:hello@lincsdirectory.co.uk">hello@lincsdirectory.co.uk</a>, or write to LincsDirectory, Kesteven Business Centre, Kesteven Street, Sleaford NG34 7DT. Removal requests are honoured whichever way they arrive.
@@ -190,13 +190,13 @@
 <script>
 (function () {
   // ---- EDIT ----
-  var PROMOTED_SUBSCRIBE_LINK = "https://checkout.revolut.com/subscription/ccc16d76-5649-4e7a-a72f-be0cd82efcd5";   // Revolut subscription checkout (£2.49/month, VAT included). Set in build/make_site.py; see build/PAYMENT-SETUP.md
+  var PROMOTED_SUBSCRIBE_LINK = "https://buy.stripe.com/4gMdRb8gabwO87f22v6Ri00";   // Stripe Payment Link (£2.49/month, VAT included). Set in build/make_site.py; see build/PAYMENT-SETUP.md
   var PAY_LINK = PROMOTED_SUBSCRIBE_LINK;                                // empty = the claim form is used and the link is emailed by hand
   var FORM_ENDPOINT = "https://api.web3forms.com/submit";
   var WEB3FORMS_KEY = "8d954ebb-0c01-4ef1-8ced-41034861f95a";   // public by design; delivers to hello@lincsdirectory.co.uk
   var PHONE = "01522 424963";
   var PRICE = "£2.49/month";
-  var PAY_LINE = "Pay by card or Revolut Pay";       // "Pay by card or Revolut Pay" until APPLE_PAY_CONFIRMED is flipped in make_site.py
+  var PAY_LINE = "Pay with Apple Pay, Google Pay or card, where your device supports them";       // "Pay by card or Revolut Pay" until APPLE_PAY_CONFIRMED is flipped in make_site.py
   // --------------
   var form = document.getElementById("claimForm"), btn = document.getElementById("claimBtn"), msg = document.getElementById("claimMsg");
   var prem = document.getElementById("premiumFields");
@@ -209,7 +209,7 @@
   var PREMIUM = "Promoted listing £2.49/month";
   if (planParam === "premium" || planParam === "promoted") form.plan.value = PREMIUM;
   if (planParam === "remove" || location.hash === "#remove") form.plan.value = "Remove listing";
-  /* Subscribe button (v6): one neutral black button for everyone, no wallet detection and no wallet branding. It opens the Revolut
+  /* Subscribe button (v6): one neutral black button for everyone, no wallet detection and no wallet branding. It opens the Stripe
      subscription checkout in the same tab; Revolut offers the payment methods itself. The small line under it comes from PAY_LINE
      (make_site.py APPLE_PAY_CONFIRMED). While PAY_LINK is empty the box stays hidden and the form flow applies. */
   var sub = document.getElementById("subscribeBox"), note = document.getElementById("promotedNote");
@@ -218,8 +218,8 @@
     if (!PAY_LINK) { sub.hidden = true; return; }
     var a = document.createElement("a"); a.className = "btn pay"; a.href = PAY_LINK; a.rel = "noopener"; a.textContent = "Subscribe · " + PRICE;
     sub.appendChild(a);
-    var alt = document.createElement("p"); alt.className = "alt"; alt.textContent = "Secure checkout by Revolut · " + PAY_LINE; sub.appendChild(alt);
-    var t = document.createElement("p"); t.className = "tiny muted"; t.textContent = "Billed monthly, VAT included; cancel any time from the link in Revolut's receipt emails. Use the same email at the checkout as on this form."; sub.appendChild(t);
+    var alt = document.createElement("p"); alt.className = "alt"; alt.textContent = "Secure checkout by Stripe · " + PAY_LINE; sub.appendChild(alt);
+    var t = document.createElement("p"); t.className = "tiny muted"; t.textContent = "Billed monthly, VAT included; cancel any time from the link in Stripe's receipt emails. Use the same email at the checkout as on this form."; sub.appendChild(t);
     sub.hidden = false;
     if (note) note.textContent = "Send this form with your photo and a short description, then press Subscribe (or subscribe first and send the form after; use the same email for both). A person switches your listing to Promoted within one working day of seeing your payment; your free Aide business report follows by email.";
   }

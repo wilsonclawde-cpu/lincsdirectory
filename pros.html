@@ -92,7 +92,7 @@
       <div class="hp" aria-hidden="true"><label>Leave this box empty<input type="checkbox" name="botcheck" tabindex="-1" autocomplete="off"></label></div>
       <label class="check"><input type="checkbox" name="consent" required> <span>I run or represent this business and agree to TAG Sleaford Ltd listing it and contacting me about the listing and customer requests (<a href="privacy.html#pros">privacy notice</a>, <a href="terms.html#introductions">terms</a>). LincsDirectory doesn't vet businesses and makes no promise about how many requests I'll get.</span></label>
       <div class="actrow"><details class="moredetail inline" id="proMore"><summary>Add more detail <span class="opt">(optional)</span></summary><div class="detail-fields"><p class="small muted" style="margin:0 0 .6rem">Optional. What you offer, in up to 3 short bullets, and about five lines about your business. Plain words, no prices; we read everything before it appears.</p><div class="svcfields" role="group" aria-labelledby="svcLabel"><span class="lbl" id="svcLabel">Services <span class="opt">(up to 3, max 60 characters each)</span></span><input name="service_1" maxlength="60" autocomplete="off" placeholder="e.g. Boiler servicing &amp; repairs" data-ph-sm="e.g. Boiler servicing" enterkeyhint="next" aria-label="Service 1"><input name="service_2" maxlength="60" autocomplete="off" placeholder="e.g. Bathrooms fitted" data-ph-sm="e.g. Bathrooms" enterkeyhint="next" aria-label="Service 2"><input name="service_3" maxlength="60" autocomplete="off" placeholder="e.g. Emergency call-outs" data-ph-sm="e.g. Call-outs" enterkeyhint="next" aria-label="Service 3"></div><label class="desc dlong">Description <span class="opt">(optional, max 400 characters)</span><textarea name="description_long" maxlength="400" rows="5" placeholder="e.g. Family-run, 15 years in the trade, serving homes across Sleaford and the villages." data-ph-sm="e.g. Family-run, 15 years in the trade."></textarea><span class="counter" data-for="description_long" aria-live="polite">0 / 400</span></label></div></details><button class="btn" type="submit" id="proBtn">Join free</button></div>
-      <p class="tiny muted" id="proPayLine" hidden style="margin:0">Promoted: send the form, then press Subscribe. Secure checkout by Revolut; pay by card or Revolut Pay. Use the same email on both so we can match your payment.</p>
+      <p class="tiny muted" id="proPayLine" hidden style="margin:0">Promoted: send the form, then press Subscribe. Secure checkout by Stripe; pay with Apple Pay, Google Pay or card, where your device supports them. Use the same email on both so we can match your payment.</p>
       <div class="msg" id="proMsg" role="status" aria-live="polite"></div>
       <div class="subscribe" id="proSubscribe" hidden></div>
     </form>
@@ -103,7 +103,7 @@
           <li>Send the form. A person looks at your website and public records (Companies House, FSA, OpenStreetMap), works out your category, the jobs you do and the towns you cover, and adds the listing, usually within a few days. We never publish a home address: work from home and we show the area you cover (Free: your home area, up to 3 towns; Promoted: as many towns as you serve, or the whole county).</li>
           <li>Your free listing shows your name, category, area or address, a pin on the map, your one line about the business, up to 3 service bullets and a short description (if you give them to us; we read everything before it appears), an "Added by the business" tag and an Update details link, with customer ratings. You appear on the matching job pages and in search.</li>
           <li><strong>Customer requests.</strong> Customer requests reach you as emails marked “Lead from LincsDirectory”. Promoted businesses covering the job and town get requests first; free listings get them only when no Promoted business covers it. We aim to pass them on by email within one working day; we can't promise how many you'll get. They come from the "Get local help" form and from the Request a quote button on your own listing.</li>
-          <li>Promoted: press Subscribe after sending the form (£2.49 a month (VAT included), through Revolut's secure checkout). Your listing is switched on once your payment shows, within one working day, and your free Aide business report follows.</li>
+          <li>Promoted: press Subscribe after sending the form (£2.49 a month (VAT included), through Stripe's secure checkout). Your listing is switched on once your payment shows, within one working day, and your free Aide business report follows.</li>
           <li>Change or remove your listing any time through the <a href="claim.html">claim form</a>. Credentials you tell us about are shown as supplied by you, never as verified; customers are told to check before they book.</li>
         </ul>
       </div>
@@ -119,7 +119,7 @@
         </ul>
         <p style="margin:0 0 .4rem"><a href="promoted.html"><strong>Click here to see what you get</strong>: a walk-through of each benefit, with examples.</a></p>
         <div class="subscribe" id="proSubscribeSide" hidden></div>
-        <p class="small muted" style="margin:.4rem 0 0">Secure checkout by Revolut: pay by card or Revolut Pay. We never take card details by phone or email. <a href="terms.html#promoted">Terms</a> · <a href="terms.html#payments">who bills you</a>.</p>
+        <p class="small muted" style="margin:.4rem 0 0">Secure checkout by Stripe: pay with Apple Pay, Google Pay or card, where your device supports them. We never take card details by phone or email. <a href="terms.html#promoted">Terms</a> · <a href="terms.html#payments">who bills you</a>.</p>
       </div>
       <div class="note"><strong>Already listed?</strong> Many garages, salons and shops are here from public records. <a href="search.html">Search for your name</a>, then <a href="claim.html">claim it</a>. Prefer to talk? Phone <a href="tel:+441522424963">01522 424963</a> or email <a href="mailto:hello@lincsdirectory.co.uk">hello@lincsdirectory.co.uk</a>.</div>
       <div class="ads" style="grid-template-columns:1fr"><div class="ad aide" role="complementary" aria-label="Premium listing: Aide business reports">
@@ -194,10 +194,10 @@
 <script>
 (function () {
   // ---- EDIT ----
-  var PROMOTED_SUBSCRIBE_LINK = "https://checkout.revolut.com/subscription/ccc16d76-5649-4e7a-a72f-be0cd82efcd5";   // Revolut subscription checkout (£2.49/month, VAT included). Set in build/make_site.py
+  var PROMOTED_SUBSCRIBE_LINK = "https://buy.stripe.com/4gMdRb8gabwO87f22v6Ri00";   // Stripe Payment Link (£2.49/month, VAT included). Set in build/make_site.py
   var PAY_LINK = PROMOTED_SUBSCRIBE_LINK;
   var FORM_ENDPOINT = "https://api.web3forms.com/submit", WEB3FORMS_KEY = "8d954ebb-0c01-4ef1-8ced-41034861f95a", PHONE = "01522 424963";
-  var PRICE = "£2.49/month", PAY_LINE = "Pay by card or Revolut Pay";
+  var PRICE = "£2.49/month", PAY_LINE = "Pay with Apple Pay, Google Pay or card, where your device supports them";
   // --------------
   var form = document.getElementById("proForm"), btn = document.getElementById("proBtn"), msg = document.getElementById("proMsg");
   var sub = document.getElementById("proSubscribe"), side = document.getElementById("proSubscribeSide"), payLine = document.getElementById("proPayLine");
@@ -207,14 +207,14 @@
   if (params.get("town")) form.town.value = params.get("town");
   if (params.get("plan") === "premium" || params.get("plan") === "promoted") form.plan.value = PREMIUM;
   function isPromoted() { return form.plan.value === PREMIUM; }
-  /* One neutral black Subscribe button (no wallet detection, no wallet branding); opens the Revolut checkout in the same tab. */
+  /* One neutral black Subscribe button (no wallet detection, no wallet branding); opens the Stripe checkout in the same tab. */
   function subscribeBox(box, lead) {
     box.textContent = "";
     if (!PAY_LINK) { box.hidden = true; return; }
     if (lead) { var l = document.createElement("p"); l.className = "alt"; l.textContent = lead; box.appendChild(l); }
     var a = document.createElement("a"); a.className = "btn pay"; a.href = PAY_LINK; a.rel = "noopener"; a.textContent = "Subscribe · " + PRICE; box.appendChild(a);
-    var alt = document.createElement("p"); alt.className = "alt"; alt.textContent = "Secure checkout by Revolut · " + PAY_LINE; box.appendChild(alt);
-    var t = document.createElement("p"); t.className = "tiny muted"; t.textContent = "Billed monthly, VAT included; cancel any time from the link in Revolut's receipt emails. Your listing is switched on once your payment shows."; box.appendChild(t);
+    var alt = document.createElement("p"); alt.className = "alt"; alt.textContent = "Secure checkout by Stripe · " + PAY_LINE; box.appendChild(alt);
+    var t = document.createElement("p"); t.className = "tiny muted"; t.textContent = "Billed monthly, VAT included; cancel any time from the link in Stripe's receipt emails. Your listing is switched on once your payment shows."; box.appendChild(t);
     box.hidden = false;
   }
   function syncPlan() { var p = isPromoted(); btn.textContent = p ? "Send details, then subscribe" : "Join free"; payLine.hidden = !p; var ar = btn.parentNode; if (ar && ar.classList) ar.classList.toggle("stack", p); }   // v9: the longer Promoted button takes its own row beside the collapsed "Add more detail"
